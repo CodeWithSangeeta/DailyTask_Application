@@ -92,6 +92,9 @@ dependencies {
     //coroutine dependency
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
 
+    //dependency for statusBar color setup
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.36.0")
+
 
 
 }

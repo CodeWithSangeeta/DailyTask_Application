@@ -79,8 +79,10 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            val todoViewModel: TodoViewModel = hiltViewModel()
-            MyAppNavigation(viewModel = todoViewModel)
+            Daily_TaskTheme {
+                val todoViewModel: TodoViewModel = hiltViewModel()
+                MyAppNavigation(viewModel = todoViewModel)
+            }
         }
 
     }

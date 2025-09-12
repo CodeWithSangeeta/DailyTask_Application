@@ -9,7 +9,9 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.platform.LocalContext
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -49,6 +51,18 @@ fun Daily_TaskTheme(
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
+
+        // ✅ Control status bar & nav bar colors
+            val systemUiController = rememberSystemUiController()
+            val useDarkIcons = !darkTheme  // light mode → dark icons, dark mode → light icons
+
+        SideEffect {
+            systemUiController.setStatusBarColor(
+                color = colorScheme.background,
+                darkIcons = useDarkIcons
+            )
+        }
+
 
     MaterialTheme(
         colorScheme = colorScheme,
