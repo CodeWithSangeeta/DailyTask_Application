@@ -1,5 +1,6 @@
 package com.practice.daily_task.todoUI
 
+import android.R.attr.priority
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -53,6 +55,7 @@ fun HomeScreen(navController: NavController, viewModel: TodoViewModel) {
 
     val todoList by viewModel.todoList.collectAsState()
     var selectedTab by rememberSaveable { mutableStateOf(0) }
+
 
     MainScaffold(
         navController = navController,
@@ -165,10 +168,9 @@ fun HomeScreen(navController: NavController, viewModel: TodoViewModel) {
             } ?: Text(
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
-                text = "No Item Added Yet",
+                text = "No Task Added Yet",
                 fontSize = 16.sp
             )
-
 
         }
     }
@@ -188,7 +190,6 @@ fun HomeScreen(navController: NavController, viewModel: TodoViewModel) {
                 .padding(8.dp)
                 .clickable { onClick() }
                 .clip(RoundedCornerShape(16.dp))
-                .background(color = Color(192, 192, 192))
                 .padding(4.dp),
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         )
@@ -202,33 +203,50 @@ fun HomeScreen(navController: NavController, viewModel: TodoViewModel) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = item.title,
-                        fontSize = 16.sp,
+                        fontSize = 18.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
                         text = item.description,
-                        fontSize = 12.sp,
+                        fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.Gray,
-                        maxLines = 1,
+                        maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
+
                     Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = SimpleDateFormat(
-                            "MMM dd, h:mm a",
-                            Locale.ENGLISH
-                        ).format(item.createdAt),
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.Gray
-                    )
+
+                    Row {
+                        Text(
+                            text = SimpleDateFormat(
+                                "MMM dd, h:mm a",
+                                Locale.ENGLISH
+                            ).format(item.createdAt),
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Gray
+                        )
+
+                         Spacer(modifier = Modifier.width(8.dp))
+
+                        if(item.priority != Priority.None) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.flag_icon),
+                                contentDescription = null,
+                                tint = item.priority.color,
+                                modifier = Modifier.size(12.dp)
+                            )
+                        }
+
+                    }
 
 
                 }
                 IconButton(onClick = onDelete) {
                     Icon(
                         painter = painterResource(id = _root_ide_package_.com.practice.daily_task.R.drawable.delete_icon),
+                        modifier = Modifier.size(20.dp),
                         contentDescription = null
                     )
                 }

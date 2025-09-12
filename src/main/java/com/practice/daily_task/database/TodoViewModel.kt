@@ -1,14 +1,10 @@
 package com.practice.daily_task.database
 
-import androidx.compose.animation.core.copy
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.practice.daily_task.MainApplication
+import com.practice.daily_task.todoUI.Priority
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -30,13 +26,20 @@ class TodoViewModel @Inject constructor(private val todoDao: TodoDao) : ViewMode
         .stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
 
-    fun addTodo(title: String, description: String) {
+    fun addTodo(
+        title: String,
+        description: String,
+        dueDate: Date? = null,
+        selectedPriority : Priority
+    ) {
         viewModelScope.launch(Dispatchers.IO) {
             todoDao.addTodo(
                 Todo(
                     title = title,
                     description = description,
-                    createdAt = Date.from(Instant.now())
+                    createdAt = Date.from(Instant.now()),
+                    dueDate = dueDate,
+                    priority = selectedPriority
                 )
             )
         }
@@ -48,15 +51,20 @@ class TodoViewModel @Inject constructor(private val todoDao: TodoDao) : ViewMode
         }
     }
 
-    fun updateTodo(id: Int, newTitle: String, newDescription: String) {
+    fun updateTodo(id: Int,
+                   newTitle: String,
+                   newDescription: String,
+                   newDueDate: Date?,
+                   selectedPriority : Priority) {
         viewModelScope.launch(Dispatchers.IO) {// It's good practice to use Dispatchers.IO for database operations
             val todoToUpdate =
                 todoDao.getTodoById(id).firstOrNull() // Assuming getTodoById returns a Flow
             todoToUpdate?.let {
                 val updatedTodo = it.copy(
                     title = newTitle,
-                    description = newDescription
-                    // createdAt remains unchanged
+                    description = newDescription,
+                    dueDate  = newDueDate,
+                    priority = selectedPriority
                 )
                 todoDao.updateTodo(updatedTodo)
             }

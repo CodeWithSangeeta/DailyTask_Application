@@ -1,6 +1,7 @@
 package com.practice.daily_task.database
 
 import androidx.room.TypeConverter
+import com.practice.daily_task.todoUI.Priority
 import java.util.Date
 
 class Converters {
@@ -12,5 +13,4 @@ class Converters {
     fun toDate(millisSinceEpoch: Long): Date {
         return Date(millisSinceEpoch)
     }
-
 }

@@ -1,5 +1,6 @@
 package com.practice.daily_task.todoUI
 
+import android.R.attr.priority
 import android.R.id.title
 import android.graphics.Paint
 
@@ -20,6 +21,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
@@ -65,6 +67,7 @@ import androidx.compose.ui.unit.sp
 import com.practice.daily_task.R
 import com.practice.daily_task.database.TodoViewModel
 import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 
 
@@ -75,11 +78,16 @@ fun DetailScreen(todoId : Int, viewModel: TodoViewModel) {
     var isEditing by remember { mutableStateOf(false) }
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
+    var dueDate by remember { mutableStateOf<Date?>(null) }
+    var showDatePicker by remember { mutableStateOf(false) }
+    var selectedPriority by remember {mutableStateOf(Priority.None)}
 
     LaunchedEffect(todo.value) {
         todo.value?.let {
             title = it.title
             description = it.description
+            dueDate = it.dueDate
+            selectedPriority = it.priority
         }
     }
 
@@ -160,40 +168,46 @@ fun DetailScreen(todoId : Int, viewModel: TodoViewModel) {
                         )
                     }
                     Spacer(modifier = Modifier.height(8.dp))
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp),
-                        horizontalArrangement = Arrangement.SpaceEvenly
-                    ) {
+
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        //for add up priority
+                        PriorityChip(
+                            selectedPriority = selectedPriority,
+                            onPrioritySelected = {
+                                    selectedPriority = it
+                            },
+                            enabled = isEditing
+                        )
+
+                        Spacer(modifier = Modifier.width(12.dp))
+
                         AssistChip(
-                            onClick = {},
-                            label = { Text(text = "Set Priority") },
+                            onClick = {
+                                if(isEditing) {
+                                    showDatePicker = true
+                                }
+                            },
+                            label = { Text(
+                                text = dueDate?.let{
+                                    "Due: ${SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(it)}"
+                                }?:"Set Due Date") },
                             leadingIcon = {
                                 Icon(
-                                    painter = painterResource(id = R.drawable.flag_icon),
+                                    imageVector = Icons.Filled.DateRange,
                                     contentDescription = null,
                                     modifier = Modifier.size(AssistChipDefaults.IconSize)
                                 )
-                            }
+                            },
                         )
-
-                        Spacer(modifier = Modifier.width(4.dp))
-
-                        Column {
-                            Spacer(modifier = Modifier.height(5.dp))
-                            Text(
-                                text = SimpleDateFormat(
-                                    "EEEE , h:mm a\nMMMM d, yyyy ",
-                                    Locale.ENGLISH
-                                ).format(System.currentTimeMillis()),
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.Gray
-                            )
-                        }
-
                     }
+
+                    if(showDatePicker) {
+                        DueDatePicker(selectedDate = dueDate,
+                            onDateSelected = { dueDate = it
+                                showDatePicker = false},
+                            onDismiss = {showDatePicker = false})// close picker if dismissed
+                    }
+
 
                     Text(
                         text = "Description",
@@ -228,7 +242,7 @@ fun DetailScreen(todoId : Int, viewModel: TodoViewModel) {
             if(isEditing){
                 ElevatedButton(
                     onClick = {
-                        viewModel.updateTodo(todoId, title, description)
+                        viewModel.updateTodo(todoId, title, description,dueDate, selectedPriority)
                         isEditing = !isEditing
                     },
                     modifier = Modifier
@@ -257,7 +271,7 @@ fun DetailScreen(todoId : Int, viewModel: TodoViewModel) {
             ElevatedButton(
                 onClick = {
                     if (isEditing) {
-                        viewModel.updateTodo(todoId, title, description)
+                        viewModel.updateTodo(todoId, title, description,dueDate ,selectedPriority)
                     }
                     isEditing = !isEditing
                 },

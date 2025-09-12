@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -62,10 +63,11 @@ import androidx.navigation.NavController
 import com.practice.daily_task.R
 import com.practice.daily_task.database.TodoViewModel
 import com.practice.daily_task.routes
-
+import com.practice.daily_task.todoUI.MainScaffold
+import com.practice.daily_task.todoUI.TopBar
 
 @Composable
-fun ProfilePage(navcontroller: NavController,viewModel: TodoViewModel) {
+fun ProfilePage(    navcontroller: NavController, viewModel: TodoViewModel) {
 
     var selectedTab by rememberSaveable { mutableStateOf(2) }
     var firstname by rememberSaveable { mutableStateOf("") }
@@ -82,7 +84,6 @@ fun ProfilePage(navcontroller: NavController,viewModel: TodoViewModel) {
     // Controls visibility of the personal information card
     var isEditing by rememberSaveable { mutableStateOf(true) }
 
-
     MainScaffold(
         navController = navcontroller,
         selectedItemIndex = selectedTab,
@@ -98,9 +99,7 @@ fun ProfilePage(navcontroller: NavController,viewModel: TodoViewModel) {
                 title = "Profile",
             )
         },
-
-
-        ) { innerPadding ->
+    ) { innerPadding ->
 
         LazyColumn(
             modifier = Modifier
@@ -108,7 +107,6 @@ fun ProfilePage(navcontroller: NavController,viewModel: TodoViewModel) {
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-
 
             item {
                 Card(
@@ -120,43 +118,60 @@ fun ProfilePage(navcontroller: NavController,viewModel: TodoViewModel) {
                     elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
                 ) {
                     Column(
-                        modifier = Modifier.padding(16.dp)
+                        modifier = Modifier
+                            .padding(16.dp)
                             .fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        // Profile Picture Placeholder
+                        // Profile picture container with edit icon
                         Box(
-                            modifier = Modifier
-                                .size(100.dp)
-                                .clip(CircleShape)
-                                .background(Color.LightGray)
-                                .clickable {
-                                    // Open image picker here
-                                },
-                           // contentAlignment = Alignment.Center
+                            modifier = Modifier.size(120.dp),
+                            contentAlignment = Alignment.Center
                         ) {
-                            IconButton(onClick = {}){
-                                Icon(
-                                imageVector = Icons.Default.Edit,
-                                contentDescription = "Add Profile Picture",
-                                tint = Color.Black,
+                            // Profile picture circle
+                            Box(
+                                modifier = Modifier
+                                    .size(100.dp)
+                                    .clip(CircleShape)
+                                    .border(2.dp, Color.Gray, CircleShape)
+                                    .background(Color.White, CircleShape)
+                                    .clickable {
+                                        // Open image picker here
+                                    }
+                            )
+
+                            // Edit icon positioned at bottom-right edge
+                            Box(
                                 modifier = Modifier
                                     .size(32.dp)
-                                    .align(Alignment.BottomEnd)
-                                    .background(Color.White, shape = CircleShape)
-                                    .padding(8.dp)
-                                    .offset(4.dp,4.dp)
+                                    .offset(x = 40.dp, y = 25.dp) // Position it half in/out of circle
+                                    .clip(CircleShape)
+                                    .background(Color.White, CircleShape)
+                                    .border(2.dp, Color.Gray, CircleShape)
+                                    .clickable {
+                                        // Handle edit action
+                                    },
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Edit,
+                                    contentDescription = "Edit Profile Picture",
+                                    tint = Color.Black,
+                                    modifier = Modifier.size(16.dp)
                                 )
                             }
                         }
 
                         Spacer(modifier = Modifier.height(12.dp))
+
                         if (displayName.isNotEmpty()) {
                             Text(
-                                text = displayName, fontSize = 20.sp,
+                                text = displayName,
+                                fontSize = 20.sp,
                                 fontWeight = FontWeight.Bold
                             )
                         }
+
                         if (displayEmail.isNotEmpty()) {
                             Text(
                                 text = displayEmail,
@@ -164,179 +179,177 @@ fun ProfilePage(navcontroller: NavController,viewModel: TodoViewModel) {
                             )
                         }
                     }
-
                 }
+
                 Spacer(modifier = Modifier.height(20.dp))
             }
 
-
-                item {
-                    if (isEditing) {
-                        Card(
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(16.dp),
-                            colors = CardDefaults.cardColors(containerColor = Color.White),
-                            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
-                        ) {
-                            Column(
-                                modifier = Modifier.padding(16.dp)
-                            ) {
-                                Text(
-                                    stringResource(R.string.personal_information),
-                                    fontSize = 20.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
-                                Spacer(modifier = Modifier.height(16.dp))
-                                Text(
-                                    text = stringResource(R.string.first_name),
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Bold,
-                                )
-                                Spacer(modifier = Modifier.height(10.dp))
-                                OutlinedTextField(
-                                    value = firstname,
-                                    onValueChange = { firstname = it },
-                                    shape = RoundedCornerShape(8.dp),
-                                    modifier = Modifier.width(360.dp),
-                                    singleLine = true,
-                                )
-                                Spacer(modifier = Modifier.height(12.dp))
-                                Text(
-                                    text = stringResource(R.string.last_name),
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Bold,
-                                )
-                                Spacer(modifier = Modifier.height(10.dp))
-                                OutlinedTextField(
-                                    value = lastname,
-                                    onValueChange = { lastname = it },
-                                    shape = RoundedCornerShape(8.dp),
-                                    modifier = Modifier.width(360.dp),
-                                    singleLine = true,
-                                )
-                                Spacer(modifier = Modifier.height(12.dp))
-                                Text(
-                                    text = stringResource(R.string.mobile_number),
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Bold,
-                                )
-                                Spacer(modifier = Modifier.height(10.dp))
-                                OutlinedTextField(
-                                    value = mobilNo,
-                                    onValueChange = { mobilNo = it },
-                                    shape = RoundedCornerShape(8.dp),
-                                    modifier = Modifier.width(360.dp),
-                                    singleLine = true,
-                                )
-                                Spacer(modifier = Modifier.height(12.dp))
-                                Text(
-                                    text = stringResource(R.string.email),
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Bold,
-                                )
-                                Spacer(modifier = Modifier.height(10.dp))
-                                OutlinedTextField(
-                                    value = email,
-                                    onValueChange = { email = it },
-                                    shape = RoundedCornerShape(8.dp),
-                                    modifier = Modifier.width(360.dp),
-                                    singleLine = true,
-                                )
-
-                                Spacer(modifier = Modifier.height(12.dp))
-                                Text(
-                                    text = stringResource(R.string.gender),
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Bold,
-                                )
-
-                                Spacer(modifier = Modifier.height(10.dp))
-
-                                OutlinedTextField(
-                                    value = selectedGender,
-                                    onValueChange = {},
-                                    readOnly = true,
-                                    trailingIcon = {
-                                        IconButton(onClick = {
-                                            genderExpanded = !genderExpanded
-                                        }) {
-                                            Icon(
-                                                imageVector = Icons.Default.ArrowDropDown,
-                                                contentDescription = null
-                                            )
-                                        }
-                                    },
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clickable { genderExpanded = !genderExpanded }
-                                )
-
-                                // Dropdown that appears below the TextField
-                                DropdownMenu(
-                                    expanded = genderExpanded,
-                                    onDismissRequest = { genderExpanded = false }
-                                ) {
-                                    genders.forEach { option ->
-                                        DropdownMenuItem(
-                                            text = { Text(option) },
-                                            onClick = {
-                                                selectedGender = option
-                                                genderExpanded = false
-                                            })
-                                    }
-                                }
-
-
-                                Spacer(modifier = Modifier.height(40.dp))
-                                val context = LocalContext.current
-                                Button(
-                                    onClick = {
-
-                                        if(firstname.trim().isEmpty()){
-                                            Toast.makeText(context, "Please enter first name", Toast.LENGTH_SHORT).show()
-                                        }
-                                        else if(email.trim().isEmpty()){
-                                            Toast.makeText(context,"Please enter email!",Toast.LENGTH_SHORT).show()
-                                        }
-                                        else {
-                                            displayName =
-                                                "${firstname.trim()} ${lastname.trim()}".trim()
-                                            displayEmail = email.trim()
-                                            isEditing = false
-                                        }
-                                    },
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-                                    Text(
-                                        "Save Changes",
-                                        fontSize = 14.sp,
-                                        textAlign = TextAlign.Center,
-                                    )
-                                }
-
-                            }
-                        }
-                    } else {
-                        Button(
-                            onClick = { isEditing = true },
-                            modifier = Modifier.fillMaxWidth()
+            item {
+                if (isEditing) {
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(16.dp)
                         ) {
                             Text(
-                                "Edit Personal Information",
-                                fontSize = 14.sp,
-                                textAlign = TextAlign.Center
+                                stringResource(R.string.personal_information),
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold
                             )
-                        }
+                            Spacer(modifier = Modifier.height(16.dp))
 
+                            Text(
+                                text = stringResource(R.string.first_name),
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                            )
+                            Spacer(modifier = Modifier.height(10.dp))
+                            OutlinedTextField(
+                                value = firstname,
+                                onValueChange = { firstname = it },
+                                shape = RoundedCornerShape(8.dp),
+                                modifier = Modifier.fillMaxWidth(),
+                                singleLine = true,
+                            )
+
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Text(
+                                text = stringResource(R.string.last_name),
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                            )
+                            Spacer(modifier = Modifier.height(10.dp))
+                            OutlinedTextField(
+                                value = lastname,
+                                onValueChange = { lastname = it },
+                                shape = RoundedCornerShape(8.dp),
+                                modifier = Modifier.fillMaxWidth(),
+                                singleLine = true,
+                            )
+
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Text(
+                                text = stringResource(R.string.mobile_number),
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                            )
+                            Spacer(modifier = Modifier.height(10.dp))
+                            OutlinedTextField(
+                                value = mobilNo,
+                                onValueChange = { mobilNo = it },
+                                shape = RoundedCornerShape(8.dp),
+                                modifier = Modifier.fillMaxWidth(),
+                                singleLine = true,
+                            )
+
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Text(
+                                text = stringResource(R.string.email),
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                            )
+                            Spacer(modifier = Modifier.height(10.dp))
+                            OutlinedTextField(
+                                value = email,
+                                onValueChange = { email = it },
+                                shape = RoundedCornerShape(8.dp),
+                                modifier = Modifier.fillMaxWidth(),
+                                singleLine = true,
+                            )
+
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Text(
+                                text = stringResource(R.string.gender),
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                            )
+
+                            Spacer(modifier = Modifier.height(10.dp))
+
+                            OutlinedTextField(
+                                value = selectedGender,
+                                onValueChange = {},
+                                readOnly = true,
+                                trailingIcon = {
+                                    IconButton(onClick = {
+                                        genderExpanded = !genderExpanded
+                                    }) {
+                                        Icon(
+                                            imageVector = Icons.Default.ArrowDropDown,
+                                            contentDescription = null
+                                        )
+                                    }
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable { genderExpanded = !genderExpanded }
+                            )
+
+                            // Dropdown that appears below the TextField
+                            DropdownMenu(
+                                expanded = genderExpanded,
+                                onDismissRequest = { genderExpanded = false }
+                            ) {
+                                genders.forEach { option ->
+                                    DropdownMenuItem(
+                                        text = { Text(option) },
+                                        onClick = {
+                                            selectedGender = option
+                                            genderExpanded = false
+                                        }
+                                    )
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.height(40.dp))
+                            val context = LocalContext.current
+                            Button(
+                                onClick = {
+                                    if (firstname.trim().isEmpty()) {
+                                        Toast.makeText(
+                                            context,
+                                            "Please enter first name",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    } else if (email.trim().isEmpty()) {
+                                        Toast.makeText(
+                                            context,
+                                            "Please enter email!",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    } else {
+                                        displayName = "${firstname.trim()} ${lastname.trim()}".trim()
+                                        displayEmail = email.trim()
+                                        isEditing = false
+                                    }
+                                },
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text(
+                                    "Save Changes",
+                                    fontSize = 14.sp,
+                                    textAlign = TextAlign.Center,
+                                )
+                            }
+                        }
+                    }
+                } else {
+                    Button(
+                        onClick = { isEditing = true },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            "Edit Personal Information",
+                            fontSize = 14.sp,
+                            textAlign = TextAlign.Center
+                        )
                     }
                 }
+            }
         }
-        }
-
     }
-
-
-
-
-
-
+}

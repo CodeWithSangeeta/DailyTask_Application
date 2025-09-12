@@ -15,4 +15,5 @@
     <string name="mobile_number">Mobile Number</string>
     <string name="quotesPart1">Start your day by setting clear intentions and prioritizing tasks .</string>
     <string name="quotesPart2">Each day is a fresh opportunity to achieve your goals!</string>
+    <string name="title_limit">Title is too long!</string>
 </resources>

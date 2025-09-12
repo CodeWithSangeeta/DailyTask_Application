@@ -24,7 +24,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -35,7 +34,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.practice.daily_task.R
 import com.practice.daily_task.database.Todo
@@ -43,7 +41,9 @@ import com.practice.daily_task.database.TodoViewModel
 import com.practice.daily_task.routes
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 
 @Composable
@@ -52,12 +52,17 @@ fun AddNewTask(navController: NavController, viewModel: TodoViewModel ) {
     val todoList by viewModel.todoList.collectAsState(initial = emptyList<Todo>())
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
+    var dueDate by remember { mutableStateOf<Date?>(null) }
+    var showDatePicker by remember { mutableStateOf(false) }
 
     var selectedTab by rememberSaveable { mutableStateOf(1) }
+
+    var selectedPriority by remember {mutableStateOf(Priority.None)}
 
     val context = LocalContext.current
 
     MainScaffold(
+
         navController = navController,
         selectedItemIndex = selectedTab,
         onItemSelectedIndex = { index ->
@@ -100,7 +105,8 @@ fun AddNewTask(navController: NavController, viewModel: TodoViewModel ) {
                     if(it.length <= 35){
                     title = it}
                     else{
-                        Toast.makeText(context,"Title is too long!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context,
+                            context.getString(R.string.title_limit), Toast.LENGTH_SHORT).show()
                     }
                                 },
                 placeholder = {
@@ -163,38 +169,39 @@ fun AddNewTask(navController: NavController, viewModel: TodoViewModel ) {
             Spacer(modifier = Modifier.height(24.dp))
 
             Row(modifier = Modifier.fillMaxWidth()) {
-                AssistChip(
-                    onClick = {},
-                    label = { Text(text = "Add Reminder") },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Filled.Notifications,
-                            contentDescription = null,
-                            modifier = Modifier.size(AssistChipDefaults.IconSize)
-                        )
-                    }
+                //for add up priority
+                PriorityChip(
+                    selectedPriority = selectedPriority,
+                    onPrioritySelected = { selectedPriority = it},
+                    enabled = true
                 )
 
                 Spacer(modifier = Modifier.width(12.dp))
 
                 AssistChip(
-                    onClick = {},
-                    label = { Text(text = "Set Priority") },
+                    onClick = {
+                        showDatePicker = true
+                    },
+                    label = { Text(
+                        text = dueDate?.let{
+                            "Due: ${SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(it)}"
+                        }?:"Set Due Date") },
                     leadingIcon = {
                         Icon(
-                           painter = painterResource(id=R.drawable.flag_icon),
+                            imageVector = Icons.Filled.DateRange,
                             contentDescription = null,
                             modifier = Modifier.size(AssistChipDefaults.IconSize)
                         )
                     }
                 )
             }
+
             AssistChip(
                 onClick = {},
-                label = { Text(text = "Set Due Date") },
+                label = { Text(text = "Add Reminder") },
                 leadingIcon = {
                     Icon(
-                        imageVector = Icons.Filled.DateRange,
+                        imageVector = Icons.Filled.Notifications,
                         contentDescription = null,
                         modifier = Modifier.size(AssistChipDefaults.IconSize)
                     )
@@ -203,6 +210,13 @@ fun AddNewTask(navController: NavController, viewModel: TodoViewModel ) {
 
             Spacer(modifier = Modifier.height(24.dp))
 
+         if(showDatePicker) {
+             DueDatePicker(selectedDate = dueDate,
+                 onDateSelected = { dueDate = it
+                 showDatePicker = false},
+                 onDismiss = {showDatePicker = false})// close picker if dismissed
+         }
+
 
             Button(onClick = {
                 if(title.isBlank() || description.isBlank()){
@@ -210,9 +224,14 @@ fun AddNewTask(navController: NavController, viewModel: TodoViewModel ) {
                 }else {
                     Toast.makeText(context,"Task Saved Successfully!", Toast.LENGTH_SHORT).show()
 
-                    viewModel.addTodo(title, description)
+                    viewModel.addTodo(title = title,
+                        description = description,
+                       dueDate = dueDate,
+                        selectedPriority = selectedPriority)
                     title = ""
                     description = ""
+                    dueDate = null
+
                     navController.navigate(routes.HomeScreen)
                 }
             }) {

@@ -19,7 +19,8 @@ object DatabaseModule {
             context.applicationContext,
             TodoDatabase::class.java,
             "todo_database"
-        ).build()
+        ).fallbackToDestructiveMigration()  //This will drop and recreate the database whenever you change the schema.
+            .build()
     }
 
     @Provides
