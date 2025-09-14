@@ -17,8 +17,11 @@ import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -99,6 +102,7 @@ fun AddNewTask(navController: NavController, viewModel: TodoViewModel ) {
                 text = stringResource(R.string.task_title),
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -116,13 +120,18 @@ fun AddNewTask(navController: NavController, viewModel: TodoViewModel ) {
                 placeholder = {
                     Text(
                         stringResource(R.string.title_suggestion),
-                        color = Color.Gray
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
                     )
                 },
                 shape = RoundedCornerShape(8.dp),
                 modifier = Modifier.width(360.dp),
                 singleLine = true,
-                maxLines = 1
+                maxLines = 1,
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                    cursorColor = MaterialTheme.colorScheme.primary
+                )
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -130,7 +139,7 @@ fun AddNewTask(navController: NavController, viewModel: TodoViewModel ) {
             Text(
                 stringResource(R.string.short_title),
                 fontSize = 14.sp,
-                color = Color.Gray
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -139,6 +148,7 @@ fun AddNewTask(navController: NavController, viewModel: TodoViewModel ) {
                 text = stringResource(R.string.description),
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -149,7 +159,7 @@ fun AddNewTask(navController: NavController, viewModel: TodoViewModel ) {
                 placeholder = {
                     Text(
                         stringResource(R.string.description_suggestion),
-                        color = Color.Gray
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
                     )
                 },
                 shape = RoundedCornerShape(8.dp),
@@ -158,6 +168,11 @@ fun AddNewTask(navController: NavController, viewModel: TodoViewModel ) {
                     .height(150.dp),
                 maxLines = 5,
                 singleLine = false,
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                    cursorColor = MaterialTheme.colorScheme.primary
+                )
 
                 )
 
@@ -167,7 +182,7 @@ fun AddNewTask(navController: NavController, viewModel: TodoViewModel ) {
             Text(
                 stringResource(R.string.task_detail),
                 fontSize = 14.sp,
-                color = Color.Gray
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -189,14 +204,19 @@ fun AddNewTask(navController: NavController, viewModel: TodoViewModel ) {
                     label = { Text(
                         text = dueDate?.let{
                             "Due: ${SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(it)}"
-                        }?:"Set Due Date") },
+                        }?:"Set Due Date",
+                        color = MaterialTheme.colorScheme.onSurface) },
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Filled.DateRange,
                             contentDescription = null,
-                            modifier = Modifier.size(AssistChipDefaults.IconSize)
+                            modifier = Modifier.size(AssistChipDefaults.IconSize),
+                            tint = MaterialTheme.colorScheme.primary
                         )
-                    }
+                    },
+                    colors = AssistChipDefaults.assistChipColors(
+                        containerColor = MaterialTheme.colorScheme.surface
+                    )
                 )
             }
 
@@ -209,14 +229,18 @@ fun AddNewTask(navController: NavController, viewModel: TodoViewModel ) {
                      isReminderSet = true
                     }
                 },
-                label = { Text(text = formattedDateTime) },
+                label = { Text(text = formattedDateTime,color = MaterialTheme.colorScheme.onSurface )},
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Filled.Notifications,
                         contentDescription = null,
-                        modifier = Modifier.size(AssistChipDefaults.IconSize)
+                        modifier = Modifier.size(AssistChipDefaults.IconSize),
+                        tint = MaterialTheme.colorScheme.primary
                     )
-                }
+                },
+                colors = AssistChipDefaults.assistChipColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                )
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -247,7 +271,11 @@ fun AddNewTask(navController: NavController, viewModel: TodoViewModel ) {
 
                     navController.navigate(routes.HomeScreen)
                 }
-            }) {
+            },
+                    colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary)
+            ) {
                 Text(
                     "Save Task",
                     fontSize = 14.sp,

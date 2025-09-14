@@ -9,6 +9,7 @@ import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.AddCircle
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
@@ -59,7 +60,10 @@ fun MainScaffold(
         floatingActionButton = floatingActionButton ?:{},
         topBar = {topBar?.invoke()},
         bottomBar = {
-            NavigationBar {
+            NavigationBar(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+
+            ) {
                 items.forEachIndexed { index, item ->
                     NavigationBarItem(
                         selected = selectedItemIndex == index,
@@ -72,8 +76,7 @@ fun MainScaffold(
                                 }
                         },
                         label = {
-                            Text(text = item.title)
-                        },
+                            Text(text = item.title)},
                         alwaysShowLabel = true,
                         icon = {
                             Icon(
@@ -84,7 +87,11 @@ fun MainScaffold(
                             )
                         },
                         colors = NavigationBarItemDefaults.colors(
-                            indicatorColor = Color.Gray
+                            selectedIconColor = MaterialTheme.colorScheme.primary,
+                            unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            selectedTextColor = MaterialTheme.colorScheme.primary,
+                            unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            indicatorColor = MaterialTheme.colorScheme.secondaryContainer
                         )
                     )
                 }

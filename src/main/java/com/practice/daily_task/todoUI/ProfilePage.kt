@@ -37,6 +37,7 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -114,7 +115,7 @@ fun ProfilePage(    navcontroller: NavController, viewModel: TodoViewModel) {
                         .fillMaxWidth()
                         .padding(16.dp),
                     shape = RoundedCornerShape(16.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                    colors = CardDefaults.cardColors( containerColor = MaterialTheme.colorScheme.surface),
                     elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
                 ) {
                     Column(
@@ -146,8 +147,8 @@ fun ProfilePage(    navcontroller: NavController, viewModel: TodoViewModel) {
                                     .size(32.dp)
                                     .offset(x = 40.dp, y = 25.dp) // Position it half in/out of circle
                                     .clip(CircleShape)
-                                    .background(Color.White, CircleShape)
-                                    .border(2.dp, Color.Gray, CircleShape)
+                                    .background(MaterialTheme.colorScheme.surface, CircleShape)
+                                    .border(2.dp, MaterialTheme.colorScheme.outline, CircleShape)
                                     .clickable {
                                         // Handle edit action
                                     },
@@ -156,7 +157,7 @@ fun ProfilePage(    navcontroller: NavController, viewModel: TodoViewModel) {
                                 Icon(
                                     imageVector = Icons.Default.Edit,
                                     contentDescription = "Edit Profile Picture",
-                                    tint = Color.Black,
+                                    tint = MaterialTheme.colorScheme.onSurface,
                                     modifier = Modifier.size(16.dp)
                                 )
                             }
@@ -168,14 +169,16 @@ fun ProfilePage(    navcontroller: NavController, viewModel: TodoViewModel) {
                             Text(
                                 text = displayName,
                                 fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                         }
 
                         if (displayEmail.isNotEmpty()) {
                             Text(
                                 text = displayEmail,
-                                fontSize = 14.sp
+                                fontSize = 14.sp,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                     }
@@ -189,7 +192,7 @@ fun ProfilePage(    navcontroller: NavController, viewModel: TodoViewModel) {
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(16.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        colors = CardDefaults.cardColors( containerColor = MaterialTheme.colorScheme.surface),
                         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
                     ) {
                         Column(
@@ -198,7 +201,8 @@ fun ProfilePage(    navcontroller: NavController, viewModel: TodoViewModel) {
                             Text(
                                 stringResource(R.string.personal_information),
                                 fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                             Spacer(modifier = Modifier.height(16.dp))
 
@@ -206,6 +210,7 @@ fun ProfilePage(    navcontroller: NavController, viewModel: TodoViewModel) {
                                 text = stringResource(R.string.first_name),
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                             Spacer(modifier = Modifier.height(10.dp))
                             OutlinedTextField(
@@ -221,6 +226,7 @@ fun ProfilePage(    navcontroller: NavController, viewModel: TodoViewModel) {
                                 text = stringResource(R.string.last_name),
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                             Spacer(modifier = Modifier.height(10.dp))
                             OutlinedTextField(
@@ -236,6 +242,7 @@ fun ProfilePage(    navcontroller: NavController, viewModel: TodoViewModel) {
                                 text = stringResource(R.string.mobile_number),
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                             Spacer(modifier = Modifier.height(10.dp))
                             OutlinedTextField(
@@ -251,6 +258,7 @@ fun ProfilePage(    navcontroller: NavController, viewModel: TodoViewModel) {
                                 text = stringResource(R.string.email),
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                             Spacer(modifier = Modifier.height(10.dp))
                             OutlinedTextField(
@@ -266,6 +274,7 @@ fun ProfilePage(    navcontroller: NavController, viewModel: TodoViewModel) {
                                 text = stringResource(R.string.gender),
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface
                             )
 
                             Spacer(modifier = Modifier.height(10.dp))

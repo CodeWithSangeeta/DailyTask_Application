@@ -24,6 +24,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -76,9 +77,10 @@ fun HomeScreen(navController: NavController, viewModel: TodoViewModel) {
                 onClick = {
                     navController.navigate(com.practice.daily_task.routes.AddTask)
                 },
-                containerColor = Color.Gray,
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
                 modifier = Modifier.size(65.dp),
-                contentColor = Color.White
+
             ) {
                 Icon(
                     painter = painterResource(id = com.practice.daily_task.R.drawable.add_icon),
@@ -111,7 +113,7 @@ fun HomeScreen(navController: NavController, viewModel: TodoViewModel) {
                 ).format(System.currentTimeMillis()),
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.Gray
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Text(
                 text = SimpleDateFormat(
@@ -120,7 +122,7 @@ fun HomeScreen(navController: NavController, viewModel: TodoViewModel) {
                 ).format(System.currentTimeMillis()),
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
-
+                color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.height(12.dp))
             Card(
@@ -128,7 +130,10 @@ fun HomeScreen(navController: NavController, viewModel: TodoViewModel) {
                     .fillMaxWidth()
                     .padding(16.dp),
                 shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(contentColor = Color.Black),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    contentColor = MaterialTheme.colorScheme.onSurface
+                ),
                 elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
             ) {
                 Column(modifier = Modifier
@@ -195,6 +200,10 @@ fun HomeScreen(navController: NavController, viewModel: TodoViewModel) {
                 .clickable { onClick() }
                 .clip(RoundedCornerShape(16.dp))
                 .padding(4.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+                contentColor = MaterialTheme.colorScheme.onSurface
+            ),
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         )
         {
@@ -208,13 +217,14 @@ fun HomeScreen(navController: NavController, viewModel: TodoViewModel) {
                     Text(
                         text = item.title,
                         fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                     Text(
                         text = item.description,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.Gray,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -229,7 +239,7 @@ fun HomeScreen(navController: NavController, viewModel: TodoViewModel) {
                             ).format(item.createdAt),
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color.Gray
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
 
                          Spacer(modifier = Modifier.width(8.dp))
@@ -254,6 +264,7 @@ fun HomeScreen(navController: NavController, viewModel: TodoViewModel) {
                                     Icon(
                                         imageVector = Icons.Filled.Notifications,
                                         contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.primary,
                                         modifier = Modifier.size(14.dp)
                                             .align(Alignment.CenterVertically)
                                     )
@@ -270,7 +281,8 @@ fun HomeScreen(navController: NavController, viewModel: TodoViewModel) {
                     Icon(
                         painter = painterResource(id = _root_ide_package_.com.practice.daily_task.R.drawable.delete_icon),
                         modifier = Modifier.size(20.dp),
-                        contentDescription = null
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.error
                     )
                 }
             }

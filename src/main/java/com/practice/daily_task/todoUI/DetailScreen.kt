@@ -103,7 +103,7 @@ fun DetailScreen(todoId : Int, viewModel: TodoViewModel) {
                         Icon(
                             imageVector = Icons.Default.KeyboardArrowLeft,
                             contentDescription = "Back",
-                            tint = Color.Black,
+                            tint = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier
                                 .size(32.dp)
                         )
@@ -113,11 +113,12 @@ fun DetailScreen(todoId : Int, viewModel: TodoViewModel) {
                         textAlign = TextAlign.Center,
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(start = 12.dp, top = 4.dp)
+                        modifier = Modifier.padding(start = 12.dp, top = 4.dp),
+                        color = MaterialTheme.colorScheme.onSurface
                     )
 
                 Spacer(modifier = Modifier.height(20.dp))
-                HorizontalDivider(color = Color.Gray)
+                HorizontalDivider(color = MaterialTheme.colorScheme.outline)
             }
         }
     )
@@ -141,11 +142,11 @@ fun DetailScreen(todoId : Int, viewModel: TodoViewModel) {
                         width = 1.dp,
                         shape = RoundedCornerShape(8.dp),
                         color = Color.Black
-                    )
-                    .padding(8.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = Color.White
-                )
+                    ),
+                        colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surface
+                        ),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             )
             {
                 Column(
@@ -165,7 +166,8 @@ fun DetailScreen(todoId : Int, viewModel: TodoViewModel) {
                         Text(
                             text = title,
                             fontWeight = FontWeight.Bold,
-                            fontSize = 24.sp
+                            fontSize = 24.sp,
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                     }
                     Spacer(modifier = Modifier.height(8.dp))
@@ -214,6 +216,7 @@ fun DetailScreen(todoId : Int, viewModel: TodoViewModel) {
                         text = "Description",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     if (isEditing) {
@@ -227,6 +230,7 @@ fun DetailScreen(todoId : Int, viewModel: TodoViewModel) {
                         Text(
                             text = description,
                             fontSize = 14.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                     Spacer(modifier = Modifier.height(8.dp))
@@ -251,8 +255,8 @@ fun DetailScreen(todoId : Int, viewModel: TodoViewModel) {
                         .padding(8.dp),
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.elevatedButtonColors(
-                        containerColor = Color.Gray,
-                        contentColor = Color.White
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
                     )
                 ) {
                     Icon(
@@ -285,15 +289,15 @@ fun DetailScreen(todoId : Int, viewModel: TodoViewModel) {
                         shape = RoundedCornerShape(12.dp)
                     ),
                 shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.elevatedButtonColors(
-                    containerColor = Color.White,
+                colors = ButtonDefaults.outlinedButtonColors(
+                    contentColor = MaterialTheme.colorScheme.onSurface
                 )
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.edit_icon),
                     contentDescription = null,
                     modifier = Modifier.size(18.dp),
-                    tint = Color.Black
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
@@ -312,7 +316,7 @@ fun DetailScreen(todoId : Int, viewModel: TodoViewModel) {
                    shape = RoundedCornerShape(12.dp),
                    colors = ButtonDefaults.elevatedButtonColors(
                        containerColor = MaterialTheme.colorScheme.primary,
-                       contentColor = Color.White
+                       contentColor = MaterialTheme.colorScheme.onPrimary
                    )
                ) {
                    Icon(

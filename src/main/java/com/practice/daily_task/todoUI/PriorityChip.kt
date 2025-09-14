@@ -7,6 +7,7 @@ import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -34,7 +35,8 @@ fun PriorityChip(
                 if(enabled){
                 expanded = true
                 }},
-            label = { Text(text = selectedPriority.label) },
+            label = { Text(text = selectedPriority.label,
+                color = MaterialTheme.colorScheme.onSurface) },
             leadingIcon = {
                 Icon(
                     painter = painterResource(id=R.drawable.flag),
@@ -42,7 +44,11 @@ fun PriorityChip(
                     modifier = Modifier.size(12.dp),
                     tint = selectedPriority.color
                 )
-            }
+            },
+            colors = AssistChipDefaults.assistChipColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                labelColor = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         )
         DropdownMenu(
             expanded=expanded,
@@ -50,7 +56,8 @@ fun PriorityChip(
         ) {
             Priority.values().filter{it != Priority.None}.forEach { priority ->
                 DropdownMenuItem(
-                    text = {Text(priority.label)},
+                    text = {Text(priority.label,
+                        color = MaterialTheme.colorScheme.onSurface)},
                     onClick = {
                         if(enabled) {
                         onPrioritySelected(priority)

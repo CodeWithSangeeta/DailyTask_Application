@@ -1,6 +1,7 @@
 package com.practice.daily_task.todoUI
 
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,6 +27,7 @@ fun TopBar(
     Column (
             modifier = Modifier.fillMaxWidth()
                 .height(100.dp)
+                .background(MaterialTheme.colorScheme.primaryContainer)
                 .statusBarsPadding()
                 .padding(horizontal = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -33,10 +36,12 @@ fun TopBar(
                     text = title,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                     modifier = Modifier.padding(start = 12.dp, top = 4.dp)
                 )
-        Spacer(modifier=Modifier.height(20.dp))
-        HorizontalDivider(color = Color.Gray)
+        Spacer(modifier=Modifier.height(34.dp))
+        HorizontalDivider(color = MaterialTheme.colorScheme.outline)
+
     }
 }
 
