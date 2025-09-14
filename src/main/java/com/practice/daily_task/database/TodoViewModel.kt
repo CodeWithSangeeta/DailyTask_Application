@@ -30,7 +30,9 @@ class TodoViewModel @Inject constructor(private val todoDao: TodoDao) : ViewMode
         title: String,
         description: String,
         dueDate: Date? = null,
-        selectedPriority : Priority
+        selectedPriority : Priority,
+        isReminderSet : Boolean,
+        reminderTime :Long? = null
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             todoDao.addTodo(
@@ -39,7 +41,9 @@ class TodoViewModel @Inject constructor(private val todoDao: TodoDao) : ViewMode
                     description = description,
                     createdAt = Date.from(Instant.now()),
                     dueDate = dueDate,
-                    priority = selectedPriority
+                    priority = selectedPriority,
+                    isReminderSet = isReminderSet,
+                    reminderTime = reminderTime
                 )
             )
         }
@@ -55,7 +59,10 @@ class TodoViewModel @Inject constructor(private val todoDao: TodoDao) : ViewMode
                    newTitle: String,
                    newDescription: String,
                    newDueDate: Date?,
-                   selectedPriority : Priority) {
+                   selectedPriority : Priority,
+                   isReminderSet : Boolean,
+                   reminderTime :Long? = null
+                   ) {
         viewModelScope.launch(Dispatchers.IO) {// It's good practice to use Dispatchers.IO for database operations
             val todoToUpdate =
                 todoDao.getTodoById(id).firstOrNull() // Assuming getTodoById returns a Flow
@@ -64,7 +71,9 @@ class TodoViewModel @Inject constructor(private val todoDao: TodoDao) : ViewMode
                     title = newTitle,
                     description = newDescription,
                     dueDate  = newDueDate,
-                    priority = selectedPriority
+                    priority = selectedPriority,
+                    isReminderSet = isReminderSet,
+                    reminderTime = reminderTime
                 )
                 todoDao.updateTodo(updatedTodo)
             }

@@ -1,7 +1,12 @@
 package com.practice.daily_task
 
+import android.Manifest
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.animation.OvershootInterpolator
@@ -20,6 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.animation.doOnEnd
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.ViewModelProvider
 import com.practice.daily_task.database.TodoViewModel
@@ -37,44 +44,39 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-            installSplashScreen().apply{
-            setKeepOnScreenCondition{
+        installSplashScreen().apply {
+            setKeepOnScreenCondition {
                 !todoViewModel.isDataReady.value
             }
 
-                setOnExitAnimationListener {  screen ->
-                    val zoomX = ObjectAnimator.ofFloat(
-                        screen.iconView,
-                        View.SCALE_X,
-                        0.4f,
-                        0.0f
-                    )
-                    zoomX.interpolator = OvershootInterpolator()
-                    zoomX.duration = 500L
-                    //zoomX.doOnEnd { screen.remove() }
+            setOnExitAnimationListener { screen ->
+                val zoomX = ObjectAnimator.ofFloat(
+                    screen.iconView,
+                    View.SCALE_X,
+                    0.4f,
+                    0.0f
+                )
+                zoomX.interpolator = OvershootInterpolator()
+                zoomX.duration = 500L
 
-                    val zoomY = ObjectAnimator.ofFloat(
-                        screen.iconView,
-                        View.SCALE_Y,
-                        0.4f,
-                        0.0f
-                    )
-                    zoomY.interpolator = OvershootInterpolator()
-                    zoomY.duration = 500L
-                   // zoomY.doOnEnd { screen.remove() }
+                val zoomY = ObjectAnimator.ofFloat(
+                    screen.iconView,
+                    View.SCALE_Y,
+                    0.4f,
+                    0.0f
+                )
+                zoomY.interpolator = OvershootInterpolator()
+                zoomY.duration = 500L
 
-//                    zoomX.start()
-//                    zoomY.start()
-
-                    AnimatorSet().apply {
-                        playTogether(zoomX,zoomY)
-                        doOnEnd {
-                            screen.remove()
-                        }
-                        start()
+                AnimatorSet().apply {
+                    playTogether(zoomX, zoomY)
+                    doOnEnd {
+                        screen.remove()
                     }
-
+                    start()
                 }
+
+            }
 
         }
 
@@ -85,6 +87,21 @@ class MainActivity : ComponentActivity() {
             }
         }
 
+        // Request Notification Permission for Android 13+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                    101
+                )
+            }
+
+        }
     }
 }
 

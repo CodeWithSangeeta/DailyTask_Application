@@ -58,6 +58,10 @@ fun AddNewTask(navController: NavController, viewModel: TodoViewModel ) {
     var selectedTab by rememberSaveable { mutableStateOf(1) }
 
     var selectedPriority by remember {mutableStateOf(Priority.None)}
+    var selectedDateTime by remember { mutableStateOf<Long?>(null) }
+    var formattedDateTime by remember { mutableStateOf("Add Reminder") }
+    var isReminderSet by remember { mutableStateOf(false) }
+
 
     val context = LocalContext.current
 
@@ -197,8 +201,15 @@ fun AddNewTask(navController: NavController, viewModel: TodoViewModel ) {
             }
 
             AssistChip(
-                onClick = {},
-                label = { Text(text = "Add Reminder") },
+                onClick = {
+                    showDateTimePicker(context) { calendar ->
+                       scheduleAlarm(context, calendar)
+                        selectedDateTime = calendar.timeInMillis
+                        formattedDateTime = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(calendar.time)
+                     isReminderSet = true
+                    }
+                },
+                label = { Text(text = formattedDateTime) },
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Filled.Notifications,
@@ -227,7 +238,9 @@ fun AddNewTask(navController: NavController, viewModel: TodoViewModel ) {
                     viewModel.addTodo(title = title,
                         description = description,
                        dueDate = dueDate,
-                        selectedPriority = selectedPriority)
+                        selectedPriority = selectedPriority,
+                        isReminderSet = isReminderSet,
+                        reminderTime = selectedDateTime)
                     title = ""
                     description = ""
                     dueDate = null

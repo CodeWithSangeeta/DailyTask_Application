@@ -16,6 +16,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
@@ -55,6 +58,7 @@ fun HomeScreen(navController: NavController, viewModel: TodoViewModel) {
 
     val todoList by viewModel.todoList.collectAsState()
     var selectedTab by rememberSaveable { mutableStateOf(0) }
+
 
 
     MainScaffold(
@@ -232,12 +236,31 @@ fun HomeScreen(navController: NavController, viewModel: TodoViewModel) {
 
                         if(item.priority != Priority.None) {
                             Icon(
-                                painter = painterResource(id = R.drawable.flag_icon),
+                                painter = painterResource(id = R.drawable.flag),
                                 contentDescription = null,
                                 tint = item.priority.color,
                                 modifier = Modifier.size(12.dp)
+                                    .align(Alignment.CenterVertically)
                             )
                         }
+
+                        if (item.priority != Priority.None && item.isReminderSet) {
+                            Spacer(modifier = Modifier.width(8.dp))
+                        }
+
+
+                            if( item.isReminderSet){
+                              // if (item.dueDate == null  || item.reminderTime <= item.dueDate.time ) {
+                                    Icon(
+                                        imageVector = Icons.Filled.Notifications,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(14.dp)
+                                            .align(Alignment.CenterVertically)
+                                    )
+                               // }
+                            }
+
+
 
                     }
 

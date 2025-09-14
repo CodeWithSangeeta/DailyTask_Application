@@ -81,6 +81,7 @@ fun DetailScreen(todoId : Int, viewModel: TodoViewModel) {
     var dueDate by remember { mutableStateOf<Date?>(null) }
     var showDatePicker by remember { mutableStateOf(false) }
     var selectedPriority by remember {mutableStateOf(Priority.None)}
+    var isReminderSet by remember { mutableStateOf(false) }
 
     LaunchedEffect(todo.value) {
         todo.value?.let {
@@ -242,7 +243,7 @@ fun DetailScreen(todoId : Int, viewModel: TodoViewModel) {
             if(isEditing){
                 ElevatedButton(
                     onClick = {
-                        viewModel.updateTodo(todoId, title, description,dueDate, selectedPriority)
+                        viewModel.updateTodo(todoId, title, description,dueDate, selectedPriority, isReminderSet = isReminderSet,)
                         isEditing = !isEditing
                     },
                     modifier = Modifier
@@ -271,7 +272,7 @@ fun DetailScreen(todoId : Int, viewModel: TodoViewModel) {
             ElevatedButton(
                 onClick = {
                     if (isEditing) {
-                        viewModel.updateTodo(todoId, title, description,dueDate ,selectedPriority)
+                        viewModel.updateTodo(todoId, title, description,dueDate ,selectedPriority,isReminderSet)
                     }
                     isEditing = !isEditing
                 },

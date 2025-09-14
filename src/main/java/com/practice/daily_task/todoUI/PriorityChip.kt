@@ -15,6 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import com.practice.daily_task.R
 import kotlin.math.exp
 
@@ -36,9 +37,9 @@ fun PriorityChip(
             label = { Text(text = selectedPriority.label) },
             leadingIcon = {
                 Icon(
-                    painter = painterResource(id=R.drawable.flag_icon),
+                    painter = painterResource(id=R.drawable.flag),
                     contentDescription = null,
-                    modifier = Modifier.size(AssistChipDefaults.IconSize),
+                    modifier = Modifier.size(12.dp),
                     tint = selectedPriority.color
                 )
             }
@@ -58,9 +59,9 @@ fun PriorityChip(
                     },
                     leadingIcon = {
                         Icon(
-                            painter = painterResource(id=R.drawable.flag_icon),
+                            painter = painterResource(id=R.drawable.flag),
                             contentDescription = null,
-                            modifier = Modifier.size(AssistChipDefaults.IconSize),
+                            modifier = Modifier.size(12.dp),
                             tint = priority.color
                         )
                     }

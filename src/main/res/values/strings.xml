@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Daily_Task</string>
+    <string name="app_name">Daily Task</string>
     <string name="short_title">Keep it short and descriptive.</string>
     <string name="task_detail">Add more details about your task.</string>
     <string name="title_suggestion">e.g., Buy groceries</string>
