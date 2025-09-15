@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TodoDao {
 
-    @Query("SELECT * FROM Todo")
+    @Query("SELECT * FROM Todo ORDER BY createdAt DESC")
     fun getAllTodo() : Flow<List<Todo>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -29,5 +29,8 @@ interface TodoDao {
 
     @Update
     suspend fun updateTodo(todo : Todo)
+
+    @Query("UPDATE Todo SET isMarked = :status WHERE id = :id")
+    suspend fun updateMarkStatus(id:Int, status : Boolean)
 
 }

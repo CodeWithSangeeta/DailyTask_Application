@@ -17,7 +17,8 @@ import java.time.Instant
 import java.util.Date
 
 @HiltViewModel
-class TodoViewModel @Inject constructor(private val todoDao: TodoDao) : ViewModel() {
+class TodoViewModel @Inject constructor(private val todoDao: TodoDao,
+                                         private val UserProfileDao: UserProfileDao) : ViewModel() {
     val todoList: StateFlow<List<Todo>> = todoDao.getAllTodo()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
@@ -30,9 +31,9 @@ class TodoViewModel @Inject constructor(private val todoDao: TodoDao) : ViewMode
         title: String,
         description: String,
         dueDate: Date? = null,
-        selectedPriority : Priority,
-        isReminderSet : Boolean,
-        reminderTime :Long? = null
+        selectedPriority: Priority,
+        isReminderSet: Boolean,
+        reminderTime: Long? = null
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             todoDao.addTodo(
@@ -55,14 +56,15 @@ class TodoViewModel @Inject constructor(private val todoDao: TodoDao) : ViewMode
         }
     }
 
-    fun updateTodo(id: Int,
-                   newTitle: String,
-                   newDescription: String,
-                   newDueDate: Date?,
-                   selectedPriority : Priority,
-                   isReminderSet : Boolean,
-                   reminderTime :Long? = null
-                   ) {
+    fun updateTodo(
+        id: Int,
+        newTitle: String,
+        newDescription: String,
+        newDueDate: Date?,
+        selectedPriority: Priority,
+        isReminderSet: Boolean,
+        reminderTime: Long? = null
+    ) {
         viewModelScope.launch(Dispatchers.IO) {// It's good practice to use Dispatchers.IO for database operations
             val todoToUpdate =
                 todoDao.getTodoById(id).firstOrNull() // Assuming getTodoById returns a Flow
@@ -70,7 +72,7 @@ class TodoViewModel @Inject constructor(private val todoDao: TodoDao) : ViewMode
                 val updatedTodo = it.copy(
                     title = newTitle,
                     description = newDescription,
-                    dueDate  = newDueDate,
+                    dueDate = newDueDate,
                     priority = selectedPriority,
                     isReminderSet = isReminderSet,
                     reminderTime = reminderTime
@@ -80,11 +82,42 @@ class TodoViewModel @Inject constructor(private val todoDao: TodoDao) : ViewMode
         }
     }
 
-        fun getTodoById(id: Int): Flow<Todo?> {
-            return todoDao.getTodoById(id)
-        }
+    fun getTodoById(id: Int): Flow<Todo?> {
+        return todoDao.getTodoById(id)
+    }
 
+
+    //user data
+    val userData: StateFlow<userProfile?> = UserProfileDao.getUser()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+
+    fun saveUserProfile(
+        name: String,
+        email: String,
+        phone: String
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val user = userProfile(id=1,name = name, email = email, phone = phone)
+            UserProfileDao.saveUser(user)
+        }
+    }
+
+    fun deleteUserProfile(profile : userProfile) {
+        viewModelScope.launch (Dispatchers.IO){
+            UserProfileDao.deletetUser(profile)
+        }
+    }
+
+    fun markTodo (id:Int,dueDate : Date?){
+        viewModelScope.launch(Dispatchers.IO){
+            if((dueDate == null) || (dueDate !=null && Date().before(dueDate))){
+                todoDao.updateMarkStatus(id,true)
+            }
+        }
+    }
 
 }
+
+
 
 

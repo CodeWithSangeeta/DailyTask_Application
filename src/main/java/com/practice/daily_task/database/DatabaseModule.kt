@@ -18,11 +18,21 @@ object DatabaseModule {
         return Room.databaseBuilder(
             context.applicationContext,
             TodoDatabase::class.java,
-            "todo_database"
+            "todo_database",
         ).fallbackToDestructiveMigration()  //This will drop and recreate the database whenever you change the schema.
             .build()
     }
 
     @Provides
-    fun provideTodoDao(todoDatabase: TodoDatabase): TodoDao = todoDatabase.geTodoDao()
+    fun provideTodoDao(todoDatabase: TodoDatabase): TodoDao = todoDatabase.getTodoDao()
+
+    @Provides
+    fun provideUserProfile(userDatabase : TodoDatabase) : UserProfileDao = userDatabase.userProfileDao()
+
 }
+
+
+
+
+
+

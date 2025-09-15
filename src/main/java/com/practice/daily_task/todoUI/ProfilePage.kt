@@ -1,5 +1,6 @@
 package com.practice.daily_task.todoUI
 
+import android.util.Patterns
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -43,6 +44,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -55,20 +57,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.practice.daily_task.R
 import com.practice.daily_task.database.TodoViewModel
 import com.practice.daily_task.routes
 import com.practice.daily_task.todoUI.MainScaffold
 import com.practice.daily_task.todoUI.TopBar
+import org.intellij.lang.annotations.Pattern
 
 @Composable
-fun ProfilePage(    navcontroller: NavController, viewModel: TodoViewModel) {
+fun ProfilePage(    navcontroller: NavController, viewModel: TodoViewModel = hiltViewModel()) {
+
+    val profile by viewModel.userData.collectAsState()
 
     var selectedTab by rememberSaveable { mutableStateOf(2) }
     var firstname by rememberSaveable { mutableStateOf("") }
@@ -79,8 +86,6 @@ fun ProfilePage(    navcontroller: NavController, viewModel: TodoViewModel) {
     var selectedGender by remember { mutableStateOf(genders[1]) }
     var genderExpanded by remember { mutableStateOf(false) }
 
-    var displayName by rememberSaveable { mutableStateOf("") }
-    var displayEmail by rememberSaveable { mutableStateOf("") }
 
     // Controls visibility of the personal information card
     var isEditing by rememberSaveable { mutableStateOf(true) }
@@ -165,22 +170,21 @@ fun ProfilePage(    navcontroller: NavController, viewModel: TodoViewModel) {
 
                         Spacer(modifier = Modifier.height(12.dp))
 
-                        if (displayName.isNotEmpty()) {
-                            Text(
-                                text = displayName,
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                        }
+if(profile!=null) {
+    Text(
+        text = profile!!.name,
+        fontSize = 20.sp,
+        fontWeight = FontWeight.Bold,
+        color = MaterialTheme.colorScheme.onSurface
+    )
+    Spacer(modifier = Modifier.height(4.dp))
 
-                        if (displayEmail.isNotEmpty()) {
-                            Text(
-                                text = displayEmail,
-                                fontSize = 14.sp,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
+    Text(
+        text = profile!!.email,
+        fontSize = 14.sp,
+        color = MaterialTheme.colorScheme.onSurfaceVariant
+    )
+}
                     }
                 }
 
@@ -188,7 +192,7 @@ fun ProfilePage(    navcontroller: NavController, viewModel: TodoViewModel) {
             }
 
             item {
-                if (isEditing) {
+                if (isEditing || profile == null ) {
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(16.dp),
@@ -217,6 +221,9 @@ fun ProfilePage(    navcontroller: NavController, viewModel: TodoViewModel) {
                                 value = firstname,
                                 onValueChange = { firstname = it },
                                 shape = RoundedCornerShape(8.dp),
+                                placeholder ={
+                                    Text("Enter first name")
+                                },
                                 modifier = Modifier.fillMaxWidth(),
                                 singleLine = true,
                             )
@@ -233,6 +240,9 @@ fun ProfilePage(    navcontroller: NavController, viewModel: TodoViewModel) {
                                 value = lastname,
                                 onValueChange = { lastname = it },
                                 shape = RoundedCornerShape(8.dp),
+                                placeholder ={
+                                    Text("Enter last name")
+                                },
                                 modifier = Modifier.fillMaxWidth(),
                                 singleLine = true,
                             )
@@ -249,6 +259,9 @@ fun ProfilePage(    navcontroller: NavController, viewModel: TodoViewModel) {
                                 value = mobilNo,
                                 onValueChange = { mobilNo = it },
                                 shape = RoundedCornerShape(8.dp),
+                                placeholder ={
+                                    Text("Enter 10 digit mobile number")
+                                },
                                 modifier = Modifier.fillMaxWidth(),
                                 singleLine = true,
                             )
@@ -265,6 +278,9 @@ fun ProfilePage(    navcontroller: NavController, viewModel: TodoViewModel) {
                                 value = email,
                                 onValueChange = { email = it },
                                 shape = RoundedCornerShape(8.dp),
+                                placeholder ={
+                                    Text("Enter valid email")
+                                },
                                 modifier = Modifier.fillMaxWidth(),
                                 singleLine = true,
                             )
@@ -318,21 +334,25 @@ fun ProfilePage(    navcontroller: NavController, viewModel: TodoViewModel) {
                             val context = LocalContext.current
                             Button(
                                 onClick = {
-                                    if (firstname.trim().isEmpty()) {
+                                    if (firstname.trim().isEmpty() || email.trim().isEmpty() || mobilNo.trim().isEmpty()) {
                                         Toast.makeText(
                                             context,
-                                            "Please enter first name",
+                                            "Please enter all fields!",
                                             Toast.LENGTH_SHORT
                                         ).show()
-                                    } else if (email.trim().isEmpty()) {
-                                        Toast.makeText(
-                                            context,
-                                            "Please enter email!",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    } else {
-                                        displayName = "${firstname.trim()} ${lastname.trim()}".trim()
-                                        displayEmail = email.trim()
+                                    }
+                                    else if (!mobilNo.matches(Regex("^[0-9]{10}$"))) {
+                                        Toast.makeText(context, "Please enter a valid 10-digit mobile number!", Toast.LENGTH_SHORT).show()
+                                    }
+                                    else if(!Patterns.EMAIL_ADDRESS.matcher(email.trim()).matches()){
+                                    Toast.makeText(context,"Please Enter a valid email",Toast.LENGTH_SHORT)
+                                    }
+                                    else{
+                                        viewModel.saveUserProfile(
+                                            name = firstname,
+                                            email = email,
+                                            phone = mobilNo
+                                        )
                                         isEditing = false
                                     }
                                 },

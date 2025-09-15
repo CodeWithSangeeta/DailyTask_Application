@@ -1,5 +1,6 @@
 package com.practice.daily_task.todoUI
 
+import android.R.attr.id
 import android.R.attr.priority
 import android.R.id.title
 import android.graphics.Paint
@@ -47,6 +48,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -64,11 +66,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.practice.daily_task.R
+import com.practice.daily_task.database.Todo
 import com.practice.daily_task.database.TodoViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+
+
 
 
 @Composable
@@ -95,7 +101,8 @@ fun DetailScreen(todoId : Int, viewModel: TodoViewModel) {
     Scaffold(
         topBar = {
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.primaryContainer),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
@@ -136,12 +143,12 @@ fun DetailScreen(todoId : Int, viewModel: TodoViewModel) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(12.dp)
-                    .size(600.dp)
+                    .size(500.dp)
                     .clip(RoundedCornerShape(8.dp))
                     .border(
                         width = 1.dp,
                         shape = RoundedCornerShape(8.dp),
-                        color = Color.Black
+                        color = MaterialTheme.colorScheme.outline
                     ),
                         colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surface
@@ -285,10 +292,10 @@ fun DetailScreen(todoId : Int, viewModel: TodoViewModel) {
                     //.padding(8.dp)
                     .border(
                         width = 1.dp,
-                        color = Color.Black,
-                        shape = RoundedCornerShape(12.dp)
+                        color = MaterialTheme.colorScheme.outline,
+                        shape = RoundedCornerShape(10.dp)
                     ),
-                shape = RoundedCornerShape(12.dp),
+               // shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.outlinedButtonColors(
                     contentColor = MaterialTheme.colorScheme.onSurface
                 )
@@ -309,7 +316,9 @@ fun DetailScreen(todoId : Int, viewModel: TodoViewModel) {
 
            if(!isEditing) {
                ElevatedButton(
-                   onClick = {},
+                   onClick = {
+                       viewModel.markTodo(todoId,dueDate)
+                   },
                    modifier = Modifier
                        .fillMaxWidth()
                        .padding(8.dp),

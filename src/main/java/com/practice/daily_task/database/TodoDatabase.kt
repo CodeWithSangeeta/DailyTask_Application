@@ -6,9 +6,10 @@ import androidx.room.TypeConverters
 import com.practice.daily_task.database.Todo
 
 
-@Database(entities =[Todo::class] , version = 5)
+@Database(entities =[Todo::class, userProfile::class] , version = 6, exportSchema = true)
 @TypeConverters(Converters::class)
 abstract class TodoDatabase : RoomDatabase(){
-    abstract fun geTodoDao() : TodoDao
+    abstract fun getTodoDao() : TodoDao
+    abstract fun userProfileDao() : UserProfileDao
 
 }

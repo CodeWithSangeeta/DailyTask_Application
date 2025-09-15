@@ -15,6 +15,7 @@ data class Todo (
     val dueDate: Date? = null, // nullable -> user may not set a due date
     val priority: Priority = Priority.None, //nullable
     val isReminderSet  : Boolean = false,
-    val reminderTime : Long? = null
+    val reminderTime : Long? = null,
+    val isMarked : Boolean = false
 
 )

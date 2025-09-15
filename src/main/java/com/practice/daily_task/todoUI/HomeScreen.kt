@@ -214,12 +214,30 @@ fun HomeScreen(navController: NavController, viewModel: TodoViewModel) {
             ) {
 
                 Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = item.title,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
+
+
+                    Row {
+                        if(item.isMarked) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.mark_icon),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(16.dp)
+                                    .align(Alignment.CenterVertically)
+                            )
+                        }
+
+                        if (item.priority != Priority.None ) {
+                            Spacer(modifier = Modifier.width(8.dp))
+                        }
+
+                        Text(
+                            text = item.title,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
                     Text(
                         text = item.description,
                         fontSize = 14.sp,
@@ -249,7 +267,8 @@ fun HomeScreen(navController: NavController, viewModel: TodoViewModel) {
                                 painter = painterResource(id = R.drawable.flag),
                                 contentDescription = null,
                                 tint = item.priority.color,
-                                modifier = Modifier.size(12.dp)
+                                modifier = Modifier
+                                    .size(12.dp)
                                     .align(Alignment.CenterVertically)
                             )
                         }
@@ -258,17 +277,16 @@ fun HomeScreen(navController: NavController, viewModel: TodoViewModel) {
                             Spacer(modifier = Modifier.width(8.dp))
                         }
 
-
-                            if( item.isReminderSet){
-                              // if (item.dueDate == null  || item.reminderTime <= item.dueDate.time ) {
+                           val currentTime = System.currentTimeMillis()
+                            if( item.isReminderSet && item.reminderTime!! >= currentTime){
                                     Icon(
                                         imageVector = Icons.Filled.Notifications,
                                         contentDescription = null,
                                         tint = MaterialTheme.colorScheme.primary,
-                                        modifier = Modifier.size(14.dp)
+                                        modifier = Modifier
+                                            .size(14.dp)
                                             .align(Alignment.CenterVertically)
                                     )
-                               // }
                             }
 
 
