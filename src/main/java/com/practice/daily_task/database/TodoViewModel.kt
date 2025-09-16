@@ -1,5 +1,6 @@
 package com.practice.daily_task.database
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practice.daily_task.todoUI.Priority
@@ -88,7 +89,7 @@ class TodoViewModel @Inject constructor(private val todoDao: TodoDao,
 
 
     //user data
-    val userData: StateFlow<userProfile?> = UserProfileDao.getUser()
+    val userData: StateFlow<Profile?> = UserProfileDao.getUser()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
     fun saveUserProfile(
@@ -97,12 +98,12 @@ class TodoViewModel @Inject constructor(private val todoDao: TodoDao,
         phone: String
     ) {
         viewModelScope.launch(Dispatchers.IO) {
-            val user = userProfile(id=1,name = name, email = email, phone = phone)
+            val user = Profile(id=1,name = name, email = email, phone = phone)
             UserProfileDao.saveUser(user)
         }
     }
 
-    fun deleteUserProfile(profile : userProfile) {
+    fun deleteUserProfile(profile : Profile) {
         viewModelScope.launch (Dispatchers.IO){
             UserProfileDao.deletetUser(profile)
         }
@@ -115,6 +116,29 @@ class TodoViewModel @Inject constructor(private val todoDao: TodoDao,
             }
         }
     }
+
+    val user : Flow<Profile?> = UserProfileDao.getUser()
+
+    //Save picked uri string to DB on IO dispatchers
+    fun saveProfileUri(uri : Uri?){
+        if(uri==null) return
+        viewModelScope.launch(Dispatchers.IO){
+            val current = user.firstOrNull()
+            val update = if(current!=null){
+                current.copy(profilePicPath= uri.toString())
+            }
+            else{
+                Profile(
+                    name = "User",
+                    email = "user@gmail.com",
+                    phone = "0000000000",
+                    profilePicPath = uri.toString()
+                )
+            }
+            UserProfileDao.saveUser(update)
+        }
+    }
+
 
 }
 

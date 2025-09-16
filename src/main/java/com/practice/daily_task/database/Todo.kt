@@ -17,5 +17,4 @@ data class Todo (
     val isReminderSet  : Boolean = false,
     val reminderTime : Long? = null,
     val isMarked : Boolean = false
-
 )

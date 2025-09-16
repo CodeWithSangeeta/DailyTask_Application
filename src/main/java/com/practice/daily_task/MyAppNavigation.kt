@@ -40,7 +40,9 @@ fun MyAppNavigation(viewModel: TodoViewModel) {
             AddNewTask(navController, viewModel = viewModel)
         }
         composable( routes.Profile){
-           ProfilePage(navController, viewModel = viewModel)
+           ProfilePage(navController,
+               viewModel = viewModel,
+           )
         }
     })
 

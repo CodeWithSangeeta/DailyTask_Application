@@ -2,6 +2,8 @@ package com.practice.daily_task.todoUI
 
 import android.util.Patterns
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -65,6 +67,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.practice.daily_task.R
 import com.practice.daily_task.database.TodoViewModel
 import com.practice.daily_task.routes
@@ -73,8 +76,7 @@ import com.practice.daily_task.todoUI.TopBar
 import org.intellij.lang.annotations.Pattern
 
 @Composable
-fun ProfilePage(    navcontroller: NavController, viewModel: TodoViewModel = hiltViewModel()) {
-
+fun ProfilePage(navcontroller: NavController, viewModel: TodoViewModel = hiltViewModel()){
     val profile by viewModel.userData.collectAsState()
 
     var selectedTab by rememberSaveable { mutableStateOf(2) }
@@ -89,6 +91,18 @@ fun ProfilePage(    navcontroller: NavController, viewModel: TodoViewModel = hil
 
     // Controls visibility of the personal information card
     var isEditing by rememberSaveable { mutableStateOf(true) }
+
+
+         //Profile pic setup
+    // collect user from DB
+    val user by viewModel.user.collectAsState(initial = null)
+    // Profile picture launcher
+    val pickLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()
+    ) { uri ->
+       // // this block runs AFTER user picks an image (or cancels)
+        viewModel.saveProfileUri(uri) // send Uri to ViewModel to save in DB
+
+    }
 
     MainScaffold(
         navController = navcontroller,
@@ -141,10 +155,23 @@ fun ProfilePage(    navcontroller: NavController, viewModel: TodoViewModel = hil
                                     .clip(CircleShape)
                                     .border(2.dp, Color.Gray, CircleShape)
                                     .background(Color.White, CircleShape)
-                                    .clickable {
-                                        // Open image picker here
-                                    }
-                            )
+                            ){    //show image from uri
+                                if(user?.profilePicPath!=null){
+                                    AsyncImage(
+                                        model = user!!.profilePicPath,
+                                        contentDescription = "Profile Picture",
+                                        modifier = Modifier.fillMaxSize()
+                                            .clip(CircleShape)
+                                    )
+                                }else{
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_launcher_background),
+                                        contentDescription = "Profile Picture",
+                                        modifier = Modifier.fillMaxSize()
+                                            .clip(CircleShape)
+                                    )
+                                }
+                            }
 
                             // Edit icon positioned at bottom-right edge
                             Box(
@@ -155,7 +182,7 @@ fun ProfilePage(    navcontroller: NavController, viewModel: TodoViewModel = hil
                                     .background(MaterialTheme.colorScheme.surface, CircleShape)
                                     .border(2.dp, MaterialTheme.colorScheme.outline, CircleShape)
                                     .clickable {
-                                        // Handle edit action
+                                        pickLauncher.launch("image/*")
                                     },
                                 contentAlignment = Alignment.Center
                             ) {

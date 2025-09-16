@@ -4,6 +4,7 @@ import android.R.attr.id
 import android.R.attr.priority
 import android.R.id.title
 import android.graphics.Paint
+import android.widget.Toast
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -59,6 +60,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -313,10 +315,17 @@ fun DetailScreen(todoId : Int, viewModel: TodoViewModel) {
                 )
             }
              }
+            val context = LocalContext.current
 
            if(!isEditing) {
                ElevatedButton(
                    onClick = {
+                       if(){
+                           Toast.makeText(context,"Marked Successfully!", Toast.LENGTH_SHORT).show()
+                       }
+                       else{
+                           Toast.makeText(context,"Sorry,You missed out due date! ", Toast.LENGTH_SHORT).show()
+                       }
                        viewModel.markTodo(todoId,dueDate)
                    },
                    modifier = Modifier

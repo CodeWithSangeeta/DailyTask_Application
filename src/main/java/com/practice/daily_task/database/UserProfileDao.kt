@@ -12,13 +12,13 @@ import kotlinx.coroutines.flow.Flow
 interface UserProfileDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun saveUser(user : userProfile)
+    suspend fun saveUser(user : Profile)
 
-    @Query("SELECT * FROM userProfile WHERE id = 1")
-     fun getUser() : Flow<userProfile?>
+    @Query("SELECT * FROM Profile WHERE id = 1")
+     fun getUser() : Flow<Profile?>
 
     @Delete
-    suspend fun deletetUser(user : userProfile)
+    suspend fun deletetUser(user : Profile)
 
 
 }
