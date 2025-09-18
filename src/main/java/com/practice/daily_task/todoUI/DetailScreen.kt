@@ -90,6 +90,7 @@ fun DetailScreen(todoId : Int, viewModel: TodoViewModel) {
     var showDatePicker by remember { mutableStateOf(false) }
     var selectedPriority by remember {mutableStateOf(Priority.None)}
     var isReminderSet by remember { mutableStateOf(false) }
+    var isMarked by remember { mutableStateOf(false) }
 
     LaunchedEffect(todo.value) {
         todo.value?.let {
@@ -97,6 +98,7 @@ fun DetailScreen(todoId : Int, viewModel: TodoViewModel) {
             description = it.description
             dueDate = it.dueDate
             selectedPriority = it.priority
+            isMarked = it.isMarked
         }
     }
 
@@ -256,7 +258,7 @@ fun DetailScreen(todoId : Int, viewModel: TodoViewModel) {
             if(isEditing){
                 ElevatedButton(
                     onClick = {
-                        viewModel.updateTodo(todoId, title, description,dueDate, selectedPriority, isReminderSet = isReminderSet,)
+                        viewModel.updateTodo(todoId, title, description,dueDate, selectedPriority, isReminderSet = isReminderSet,isMarked=isMarked,)
                         isEditing = !isEditing
                     },
                     modifier = Modifier
@@ -285,7 +287,7 @@ fun DetailScreen(todoId : Int, viewModel: TodoViewModel) {
             ElevatedButton(
                 onClick = {
                     if (isEditing) {
-                        viewModel.updateTodo(todoId, title, description,dueDate ,selectedPriority,isReminderSet)
+                        viewModel.updateTodo(todoId, title, description,dueDate ,selectedPriority,isReminderSet,isMarked=isMarked)
                     }
                     isEditing = !isEditing
                 },
@@ -320,7 +322,10 @@ fun DetailScreen(todoId : Int, viewModel: TodoViewModel) {
            if(!isEditing) {
                ElevatedButton(
                    onClick = {
-                       if(){
+                       if(isMarked){
+                           Toast.makeText(context,"Already Marked!", Toast.LENGTH_SHORT).show()
+                       }
+                       else if((dueDate == null) || (dueDate !=null && Date().before(dueDate))){
                            Toast.makeText(context,"Marked Successfully!", Toast.LENGTH_SHORT).show()
                        }
                        else{

@@ -64,7 +64,8 @@ class TodoViewModel @Inject constructor(private val todoDao: TodoDao,
         newDueDate: Date?,
         selectedPriority: Priority,
         isReminderSet: Boolean,
-        reminderTime: Long? = null
+        reminderTime: Long? = null,
+        isMarked : Boolean
     ) {
         viewModelScope.launch(Dispatchers.IO) {// It's good practice to use Dispatchers.IO for database operations
             val todoToUpdate =
@@ -76,7 +77,8 @@ class TodoViewModel @Inject constructor(private val todoDao: TodoDao,
                     dueDate = newDueDate,
                     priority = selectedPriority,
                     isReminderSet = isReminderSet,
-                    reminderTime = reminderTime
+                    reminderTime = reminderTime,
+                    isMarked = isMarked
                 )
                 todoDao.updateTodo(updatedTodo)
             }
@@ -103,11 +105,19 @@ class TodoViewModel @Inject constructor(private val todoDao: TodoDao,
         }
     }
 
-    fun deleteUserProfile(profile : Profile) {
-        viewModelScope.launch (Dispatchers.IO){
-            UserProfileDao.deletetUser(profile)
+    fun clearUserProfile() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val empty = Profile(
+                id = 1,
+                name = "",
+                email = "",
+                phone = "",
+                profilePicPath = null
+            )
+            UserProfileDao.saveUser(empty)
         }
     }
+
 
     fun markTodo (id:Int,dueDate : Date?){
         viewModelScope.launch(Dispatchers.IO){

@@ -1,5 +1,6 @@
 package com.practice.daily_task.todoUI
 
+import android.content.Intent
 import android.util.Patterns
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -25,6 +26,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
@@ -66,6 +68,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.practice.daily_task.R
@@ -87,10 +90,12 @@ fun ProfilePage(navcontroller: NavController, viewModel: TodoViewModel = hiltVie
     val genders = listOf("Male", "Female")
     var selectedGender by remember { mutableStateOf(genders[1]) }
     var genderExpanded by remember { mutableStateOf(false) }
+    var ProfilePicPath by remember {mutableStateOf("")}
 
 
     // Controls visibility of the personal information card
     var isEditing by rememberSaveable { mutableStateOf(true) }
+    val context = LocalContext.current
 
 
          //Profile pic setup
@@ -99,6 +104,17 @@ fun ProfilePage(navcontroller: NavController, viewModel: TodoViewModel = hiltVie
     // Profile picture launcher
     val pickLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()
     ) { uri ->
+        uri?.let {
+           //You need to take persistable URI permission and then save it in your database.
+            try {
+                context.contentResolver.takePersistableUriPermission(
+                    it,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION
+                )
+            } catch (e: SecurityException) {
+                e.printStackTrace()
+            }
+        }
        // // this block runs AFTER user picks an image (or cancels)
         viewModel.saveProfileUri(uri) // send Uri to ViewModel to save in DB
 
@@ -137,63 +153,86 @@ fun ProfilePage(navcontroller: NavController, viewModel: TodoViewModel = hiltVie
                     colors = CardDefaults.cardColors( containerColor = MaterialTheme.colorScheme.surface),
                     elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
                 ) {
-                    Column(
-                        modifier = Modifier
-                            .padding(16.dp)
-                            .fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        // Profile picture container with edit icon
-                        Box(
-                            modifier = Modifier.size(120.dp),
-                            contentAlignment = Alignment.Center
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        IconButton(
+                            onClick = { viewModel.clearUserProfile() },
+                            modifier = Modifier.align(Alignment.TopEnd)
                         ) {
-                            // Profile picture circle
+                            Icon(
+                                imageVector = Icons.Default.Clear,
+                                modifier = Modifier.size(20.dp),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.error
+                            )
+                        }
+                        Column(
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+
+                            // Profile picture container with edit icon
                             Box(
-                                modifier = Modifier
-                                    .size(100.dp)
-                                    .clip(CircleShape)
-                                    .border(2.dp, Color.Gray, CircleShape)
-                                    .background(Color.White, CircleShape)
-                            ){    //show image from uri
-                                if(user?.profilePicPath!=null){
-                                    AsyncImage(
-                                        model = user!!.profilePicPath,
-                                        contentDescription = "Profile Picture",
-                                        modifier = Modifier.fillMaxSize()
-                                            .clip(CircleShape)
-                                    )
-                                }else{
+                                modifier = Modifier.size(120.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                // Profile picture circle
+                                Box(
+                                    modifier = Modifier
+                                        .size(100.dp)
+                                        .clip(CircleShape)
+                                        .border(2.dp, Color.Gray, CircleShape)
+                                        .background(Color.White, CircleShape)
+                                ) {    //show image from uri
+                                    if (user?.profilePicPath != null) {
+                                        AsyncImage(
+                                            model = user!!.profilePicPath,
+                                            contentDescription = "Profile Picture",
+                                            modifier = Modifier.fillMaxSize()
+                                                .clip(CircleShape)
+                                        )
+                                    } else {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.ic_launcher_background),
+                                            contentDescription = "Profile Picture",
+                                            modifier = Modifier.fillMaxSize()
+                                                .clip(CircleShape)
+                                        )
+                                    }
+                                }
+
+                                // Edit icon positioned at bottom-right edge
+                                Box(
+                                    modifier = Modifier
+                                        .size(32.dp)
+                                        .offset(
+                                            x = 40.dp,
+                                            y = 25.dp
+                                        ) // Position it half in/out of circle
+                                        .clip(CircleShape)
+                                        .background(MaterialTheme.colorScheme.surface, CircleShape)
+                                        .border(
+                                            2.dp,
+                                            MaterialTheme.colorScheme.outline,
+                                            CircleShape
+                                        )
+                                        .clickable {
+                                            pickLauncher.launch("image/*")
+                                        },
+                                    contentAlignment = Alignment.Center
+                                ) {
                                     Icon(
-                                        painter = painterResource(id = R.drawable.ic_launcher_background),
-                                        contentDescription = "Profile Picture",
-                                        modifier = Modifier.fillMaxSize()
-                                            .clip(CircleShape)
+                                        imageVector = Icons.Default.Edit,
+                                        contentDescription = "Edit Profile Picture",
+                                        tint = MaterialTheme.colorScheme.onSurface,
+                                        modifier = Modifier.size(16.dp)
                                     )
                                 }
                             }
-
-                            // Edit icon positioned at bottom-right edge
-                            Box(
-                                modifier = Modifier
-                                    .size(32.dp)
-                                    .offset(x = 40.dp, y = 25.dp) // Position it half in/out of circle
-                                    .clip(CircleShape)
-                                    .background(MaterialTheme.colorScheme.surface, CircleShape)
-                                    .border(2.dp, MaterialTheme.colorScheme.outline, CircleShape)
-                                    .clickable {
-                                        pickLauncher.launch("image/*")
-                                    },
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Edit,
-                                    contentDescription = "Edit Profile Picture",
-                                    tint = MaterialTheme.colorScheme.onSurface,
-                                    modifier = Modifier.size(16.dp)
-                                )
-                            }
                         }
+                    }
+
 
                         Spacer(modifier = Modifier.height(12.dp))
 
@@ -378,7 +417,8 @@ if(profile!=null) {
                                         viewModel.saveUserProfile(
                                             name = firstname,
                                             email = email,
-                                            phone = mobilNo
+                                            phone = mobilNo,
+//                                            profilePicPath = ProfilePicPath
                                         )
                                         isEditing = false
                                     }
@@ -406,6 +446,6 @@ if(profile!=null) {
                     }
                 }
             }
+
         }
     }
-}

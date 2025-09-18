@@ -106,6 +106,9 @@ fun HomeScreen(navController: NavController, viewModel: TodoViewModel) {
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.Top,
         ) {
+            Row{
+
+            }
             Text(
                 text = SimpleDateFormat(
                     "EEEE , h:mm a",
