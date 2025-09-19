@@ -161,9 +161,13 @@ class TodoViewModel @Inject constructor(private val todoDao: TodoDao,
     private val _searchQuery = MutableStateFlow("")
     val searchQuery = _searchQuery.asStateFlow()
 
+    private val _sortOption = MutableStateFlow("Earliest First")
+    val sortOption = _sortOption.asStateFlow()
+
     //
-    val filteredTasks : Flow<List<Todo>> = combine(allTasks, searchQuery) { allTasks, searchQuery ->
-        if (searchQuery.isBlank()) {
+    val filteredTasks : Flow<List<Todo>> = combine(allTasks, searchQuery,sortOption) {
+       allTasks, searchQuery ,sortOpt ->
+       var filtered = if (searchQuery.isBlank()) {
             allTasks
         }
         else{
@@ -173,10 +177,26 @@ class TodoViewModel @Inject constructor(private val todoDao: TodoDao,
                allTasks.description.contains(searchQuery, ignoreCase = true)
             }
     }
+        filtered = when (sortOpt){
+            "Earliest First" -> filtered.sortedBy { it.dueDate }
+            "Latest First" -> filtered.sortedByDescending {it.dueDate}
+            "High → Low" -> filtered.sortedByDescending {it.priority}
+            "Low → High" -> filtered.sortedBy {it.priority}
+            "Complete  First" -> filtered.sortedBy{it.isMarked}
+             "Incomplete  First" -> filtered.sortedByDescending {it.isMarked}
+            "A → Z" -> filtered.sortedBy { it.title.lowercase() }
+            "Z → A" -> filtered.sortedByDescending { it.title.lowercase() }
+            else -> filtered
+        }
+        filtered
     }
 
     fun updateSearchQuery(newQuery:String){
         _searchQuery.value = newQuery
+    }
+
+    fun updateSortOption(newSort:String){
+        _sortOption.value = newSort
     }
 
 

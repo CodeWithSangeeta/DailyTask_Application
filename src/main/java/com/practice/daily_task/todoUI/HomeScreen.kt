@@ -58,6 +58,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.room.util.query
 import com.practice.daily_task.R
@@ -71,10 +72,11 @@ import com.practice.daily_task.routes
 @Composable
 fun HomeScreen(navController: NavController, viewModel: TodoViewModel) {
 
-    val todoList by viewModel.todoList.collectAsState()
     var selectedTab by rememberSaveable { mutableStateOf(0) }
+
     val query by viewModel.searchQuery.collectAsState()
     val tasks by viewModel.filteredTasks.collectAsState(initial = emptyList())
+    val sortOption by viewModel.sortOption.collectAsState()
 
 
     MainScaffold(
@@ -121,12 +123,17 @@ fun HomeScreen(navController: NavController, viewModel: TodoViewModel) {
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.Top,
         ) {
+
             SortSearch(
                 query = query,
                 onQueryChange = {
                     viewModel.updateSearchQuery(it)
                 },
+               sortOption = sortOption,
+                onSortSelected = {viewModel.updateSortOption(it)}
+
             )
+
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = SimpleDateFormat(
@@ -149,38 +156,6 @@ fun HomeScreen(navController: NavController, viewModel: TodoViewModel) {
             Spacer(modifier = Modifier.height(12.dp))
 
 
-//            Card(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(16.dp),
-//                shape = RoundedCornerShape(16.dp),
-//                colors = CardDefaults.cardColors(
-//                    containerColor = MaterialTheme.colorScheme.surface,
-//                    contentColor = MaterialTheme.colorScheme.onSurface
-//                ),
-//                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
-//            ) {
-//                Column(modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(16.dp)) {
-//                    Text("Your Daily Focus", fontSize = 24.sp, fontWeight = FontWeight.Bold)
-//                    Spacer(modifier = Modifier.height(12.dp))
-//                    Text(
-//                        stringResource(R.string.quotesPart1) +
-//                                stringResource(R.string.quotesPart2),
-//                        fontSize = 16.sp,
-//                        color = Color.Gray,
-//                        maxLines = Int.MAX_VALUE //allow multiple lines
-//                    )
-//
-//                }
-//            }
-
-
-            //make safe call if list is empty then it only print text otherwise it call lazycolumn
-//            val currentTodoList = todoList
-//            currentTodoList?.let { list ->
-//                if (list.isEmpty()) {
             if (tasks.isEmpty()) {
                 val emptyMessage = if(query.isBlank()){
                     "No Task Added Yet"
@@ -309,11 +284,7 @@ fun HomeScreen(navController: NavController, viewModel: TodoViewModel) {
                                             .align(Alignment.CenterVertically)
                                     )
                             }
-
-
-
                     }
-
 
                 }
                 IconButton(onClick = onDelete) {
@@ -334,10 +305,12 @@ fun HomeScreen(navController: NavController, viewModel: TodoViewModel) {
 @Composable
 fun SortSearch(
     query : String,
-    onQueryChange : (String) -> Unit
+    onQueryChange : (String) -> Unit,
+    sortOption : String,
+    onSortSelected: (String) -> Unit
 ) {
     var isSheetOpen by rememberSaveable { mutableStateOf(false) }
-    var selectedSort by rememberSaveable {mutableStateOf ("Due Date (Earliest First)")}
+
     Row(
         modifier = Modifier.fillMaxWidth()
             .padding(8.dp),
@@ -389,8 +362,11 @@ fun SortSearch(
         if(isSheetOpen) {
             BottomSheet(
                 onDismiss = { isSheetOpen = false },
-                selectedSort = selectedSort,
-                onSortSelected = {selectedSort = it}
+                selectedSort = sortOption,
+                onSortSelected = {
+                    onSortSelected(it)
+                isSheetOpen = false
+                }
             )
         }
     }
@@ -406,8 +382,6 @@ fun BottomSheet(
     onSortSelected : (String) -> Unit,
     onDismiss: () -> Unit
     ){
-//    val sheetState = rememberModalBottomSheetState()
-
         ModalBottomSheet(
             onDismissRequest = {
               onDismiss()
@@ -484,14 +458,14 @@ fun BottomSheet(
                        selected = selectedSort == "title_asc",
                        onClick = { onSortSelected("title_asc") }
                    )
-                   Text("A -> Z")
+                   Text("A → Z")
                }
                Row(verticalAlignment = Alignment.CenterVertically) {
                    RadioButton(
                        selected = selectedSort == "title_desc",
                        onClick = { onSortSelected("title_desc") }
                    )
-                   Text("Z -> A")
+                   Text("Z → A")
                }
 
            }
