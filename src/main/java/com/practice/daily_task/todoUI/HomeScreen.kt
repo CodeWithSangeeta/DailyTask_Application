@@ -34,6 +34,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -336,6 +337,7 @@ fun SortSearch(
     onQueryChange : (String) -> Unit
 ) {
     var isSheetOpen by rememberSaveable { mutableStateOf(false) }
+    var selectedSort by rememberSaveable {mutableStateOf ("Due Date (Earliest First)")}
     Row(
         modifier = Modifier.fillMaxWidth()
             .padding(8.dp),
@@ -386,7 +388,9 @@ fun SortSearch(
 
         if(isSheetOpen) {
             BottomSheet(
-                onDismiss = { isSheetOpen = false }
+                onDismiss = { isSheetOpen = false },
+                selectedSort = selectedSort,
+                onSortSelected = {selectedSort = it}
             )
         }
     }
@@ -397,17 +401,100 @@ fun SortSearch(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BottomSheet(onDismiss: () -> Unit){
-    val sheetState = rememberModalBottomSheetState()
+fun BottomSheet(
+    selectedSort : String,
+    onSortSelected : (String) -> Unit,
+    onDismiss: () -> Unit
+    ){
+//    val sheetState = rememberModalBottomSheetState()
 
         ModalBottomSheet(
-            sheetState = sheetState,
             onDismissRequest = {
               onDismiss()
             }
         ) {
-            Text("Hello")
+           Column(modifier = Modifier
+               .fillMaxWidth()
+               .padding(16.dp)) {
+               Text("Sort By", style = MaterialTheme.typography.titleMedium.copy(
+                   color = MaterialTheme.colorScheme.primary
+               ))
 
+               Spacer(modifier = Modifier.height(12.dp))
+
+
+               // Due Date
+               Text("Due Date",
+                   style = MaterialTheme.typography.bodyMedium.copy(
+                       color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                   ))
+               Row(verticalAlignment = Alignment.CenterVertically) {
+                   RadioButton(
+                       selected = selectedSort == "due_asc",
+                       onClick = { onSortSelected("due_asc") }
+                   )
+                   Text("Earliest First")
+               }
+               Row(verticalAlignment = Alignment.CenterVertically) {
+                   RadioButton(
+                       selected = selectedSort == "due_desc",
+                       onClick = { onSortSelected("due_desc") }
+                   )
+                   Text("Latest First")
+               }
+
+               // Priority
+               Text("Priority")
+               Row(verticalAlignment = Alignment.CenterVertically) {
+                   RadioButton(
+                       selected = selectedSort == "priority_high",
+                       onClick = { onSortSelected("priority_high") }
+                   )
+                   Text("High → Low")
+               }
+               Row(verticalAlignment = Alignment.CenterVertically) {
+                   RadioButton(
+                       selected = selectedSort == "priority_low",
+                       onClick = { onSortSelected("priority_low") }
+                   )
+                   Text("Low → High")
+               }
+
+               // Due Date
+               Text("Status")
+               Row(verticalAlignment = Alignment.CenterVertically) {
+                   RadioButton(
+                       selected = selectedSort == "state_complete",
+                       onClick = { onSortSelected("state_complete") }
+                   )
+                   Text("Complete First")
+               }
+               Row(verticalAlignment = Alignment.CenterVertically) {
+                   RadioButton(
+                       selected = selectedSort == "state_notComplete",
+                       onClick = { onSortSelected("state_notComplete") }
+                   )
+                   Text("Incomplete  First")
+               }
+
+               //Title
+               Text("Title")
+               Row(verticalAlignment = Alignment.CenterVertically) {
+                   RadioButton(
+                       selected = selectedSort == "title_asc",
+                       onClick = { onSortSelected("title_asc") }
+                   )
+                   Text("A -> Z")
+               }
+               Row(verticalAlignment = Alignment.CenterVertically) {
+                   RadioButton(
+                       selected = selectedSort == "title_desc",
+                       onClick = { onSortSelected("title_desc") }
+                   )
+                   Text("Z -> A")
+               }
+
+           }
         }
     }
 
