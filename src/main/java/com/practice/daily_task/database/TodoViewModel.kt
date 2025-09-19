@@ -8,8 +8,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -147,6 +150,33 @@ class TodoViewModel @Inject constructor(private val todoDao: TodoDao,
             }
             UserProfileDao.saveUser(update)
         }
+    }
+
+
+
+
+    //Searching logic
+    val allTasks : Flow<List<Todo>> = todoDao.getAllTodo()
+
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery = _searchQuery.asStateFlow()
+
+    //
+    val filteredTasks : Flow<List<Todo>> = combine(allTasks, searchQuery) { allTasks, searchQuery ->
+        if (searchQuery.isBlank()) {
+            allTasks
+        }
+        else{
+            allTasks.filter{
+                allTasks ->
+                allTasks.title.contains(searchQuery, ignoreCase = true) ||
+               allTasks.description.contains(searchQuery, ignoreCase = true)
+            }
+    }
+    }
+
+    fun updateSearchQuery(newQuery:String){
+        _searchQuery.value = newQuery
     }
 
 

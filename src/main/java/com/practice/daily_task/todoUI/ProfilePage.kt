@@ -58,6 +58,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -79,7 +80,7 @@ import com.practice.daily_task.todoUI.TopBar
 import org.intellij.lang.annotations.Pattern
 
 @Composable
-fun ProfilePage(navcontroller: NavController, viewModel: TodoViewModel = hiltViewModel()){
+fun ProfilePage(navcontroller: NavController, viewModel: TodoViewModel = hiltViewModel()) {
     val profile by viewModel.userData.collectAsState()
 
     var selectedTab by rememberSaveable { mutableStateOf(2) }
@@ -90,7 +91,7 @@ fun ProfilePage(navcontroller: NavController, viewModel: TodoViewModel = hiltVie
     val genders = listOf("Male", "Female")
     var selectedGender by remember { mutableStateOf(genders[1]) }
     var genderExpanded by remember { mutableStateOf(false) }
-    var ProfilePicPath by remember {mutableStateOf("")}
+
 
 
     // Controls visibility of the personal information card
@@ -98,27 +99,27 @@ fun ProfilePage(navcontroller: NavController, viewModel: TodoViewModel = hiltVie
     val context = LocalContext.current
 
 
-         //Profile pic setup
+    //Profile pic setup
     // collect user from DB
     val user by viewModel.user.collectAsState(initial = null)
     // Profile picture launcher
-    val pickLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()
-    ) { uri ->
-        uri?.let {
-           //You need to take persistable URI permission and then save it in your database.
-            try {
-                context.contentResolver.takePersistableUriPermission(
-                    it,
-                    Intent.FLAG_GRANT_READ_URI_PERMISSION
-                )
-            } catch (e: SecurityException) {
-                e.printStackTrace()
+    val pickLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+            uri?.let {
+                //You need to take persistable URI permission and then save it in your database.
+                try {
+                    context.contentResolver.takePersistableUriPermission(
+                        it,
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    )
+                } catch (e: SecurityException) {
+                    e.printStackTrace()
+                }
             }
-        }
-       // // this block runs AFTER user picks an image (or cancels)
-        viewModel.saveProfileUri(uri) // send Uri to ViewModel to save in DB
+            // // this block runs AFTER user picks an image (or cancels)
+            viewModel.saveProfileUri(uri) // send Uri to ViewModel to save in DB
 
-    }
+        }
 
     MainScaffold(
         navController = navcontroller,
@@ -150,7 +151,7 @@ fun ProfilePage(navcontroller: NavController, viewModel: TodoViewModel = hiltVie
                         .fillMaxWidth()
                         .padding(16.dp),
                     shape = RoundedCornerShape(16.dp),
-                    colors = CardDefaults.cardColors( containerColor = MaterialTheme.colorScheme.surface),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                     elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
                 ) {
                     Box(modifier = Modifier.fillMaxWidth()) {
@@ -165,6 +166,7 @@ fun ProfilePage(navcontroller: NavController, viewModel: TodoViewModel = hiltVie
                                 tint = MaterialTheme.colorScheme.error
                             )
                         }
+
                         Column(
                             modifier = Modifier
                                 .padding(16.dp)
@@ -189,6 +191,7 @@ fun ProfilePage(navcontroller: NavController, viewModel: TodoViewModel = hiltVie
                                         AsyncImage(
                                             model = user!!.profilePicPath,
                                             contentDescription = "Profile Picture",
+                                            contentScale = ContentScale.Crop,
                                             modifier = Modifier.fillMaxSize()
                                                 .clip(CircleShape)
                                         )
@@ -218,7 +221,7 @@ fun ProfilePage(navcontroller: NavController, viewModel: TodoViewModel = hiltVie
                                             CircleShape
                                         )
                                         .clickable {
-                                            pickLauncher.launch("image/*")
+                                            pickLauncher.launch(arrayOf("image/*"))
                                         },
                                     contentAlignment = Alignment.Center
                                 ) {
@@ -230,39 +233,42 @@ fun ProfilePage(navcontroller: NavController, viewModel: TodoViewModel = hiltVie
                                     )
                                 }
                             }
+
+
+                            Spacer(modifier = Modifier.height(12.dp))
+
+                            if (profile != null) {
+                                Text(
+                                    text = profile!!.name,
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+
+                                Text(
+                                    text = profile!!.email,
+                                    fontSize = 14.sp,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.height(20.dp))
                         }
                     }
-
-
-                        Spacer(modifier = Modifier.height(12.dp))
-
-if(profile!=null) {
-    Text(
-        text = profile!!.name,
-        fontSize = 20.sp,
-        fontWeight = FontWeight.Bold,
-        color = MaterialTheme.colorScheme.onSurface
-    )
-    Spacer(modifier = Modifier.height(4.dp))
-
-    Text(
-        text = profile!!.email,
-        fontSize = 14.sp,
-        color = MaterialTheme.colorScheme.onSurfaceVariant
-    )
-}
-                    }
                 }
-
-                Spacer(modifier = Modifier.height(20.dp))
             }
 
+
+
+
+
             item {
-                if (isEditing || profile == null ) {
+                if (isEditing || profile==null ) {
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(16.dp),
-                        colors = CardDefaults.cardColors( containerColor = MaterialTheme.colorScheme.surface),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
                     ) {
                         Column(
@@ -287,7 +293,7 @@ if(profile!=null) {
                                 value = firstname,
                                 onValueChange = { firstname = it },
                                 shape = RoundedCornerShape(8.dp),
-                                placeholder ={
+                                placeholder = {
                                     Text("Enter first name")
                                 },
                                 modifier = Modifier.fillMaxWidth(),
@@ -306,7 +312,7 @@ if(profile!=null) {
                                 value = lastname,
                                 onValueChange = { lastname = it },
                                 shape = RoundedCornerShape(8.dp),
-                                placeholder ={
+                                placeholder = {
                                     Text("Enter last name")
                                 },
                                 modifier = Modifier.fillMaxWidth(),
@@ -325,7 +331,7 @@ if(profile!=null) {
                                 value = mobilNo,
                                 onValueChange = { mobilNo = it },
                                 shape = RoundedCornerShape(8.dp),
-                                placeholder ={
+                                placeholder = {
                                     Text("Enter 10 digit mobile number")
                                 },
                                 modifier = Modifier.fillMaxWidth(),
@@ -344,7 +350,7 @@ if(profile!=null) {
                                 value = email,
                                 onValueChange = { email = it },
                                 shape = RoundedCornerShape(8.dp),
-                                placeholder ={
+                                placeholder = {
                                     Text("Enter valid email")
                                 },
                                 modifier = Modifier.fillMaxWidth(),
@@ -400,20 +406,29 @@ if(profile!=null) {
                             val context = LocalContext.current
                             Button(
                                 onClick = {
-                                    if (firstname.trim().isEmpty() || email.trim().isEmpty() || mobilNo.trim().isEmpty()) {
+                                    if (firstname.trim().isEmpty() || email.trim()
+                                            .isEmpty() || mobilNo.trim().isEmpty()
+                                    ) {
                                         Toast.makeText(
                                             context,
                                             "Please enter all fields!",
                                             Toast.LENGTH_SHORT
                                         ).show()
-                                    }
-                                    else if (!mobilNo.matches(Regex("^[0-9]{10}$"))) {
-                                        Toast.makeText(context, "Please enter a valid 10-digit mobile number!", Toast.LENGTH_SHORT).show()
-                                    }
-                                    else if(!Patterns.EMAIL_ADDRESS.matcher(email.trim()).matches()){
-                                    Toast.makeText(context,"Please Enter a valid email",Toast.LENGTH_SHORT)
-                                    }
-                                    else{
+                                    } else if (!mobilNo.matches(Regex("^[0-9]{10}$"))) {
+                                        Toast.makeText(
+                                            context,
+                                            "Please enter a valid 10-digit mobile number!",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    } else if (!Patterns.EMAIL_ADDRESS.matcher(email.trim())
+                                            .matches()
+                                    ) {
+                                        Toast.makeText(
+                                            context,
+                                            "Please Enter a valid email",
+                                            Toast.LENGTH_SHORT
+                                        )
+                                    } else {
                                         viewModel.saveUserProfile(
                                             name = firstname,
                                             email = email,
@@ -449,3 +464,4 @@ if(profile!=null) {
 
         }
     }
+}

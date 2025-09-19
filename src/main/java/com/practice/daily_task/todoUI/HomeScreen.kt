@@ -1,6 +1,8 @@
 package com.practice.daily_task.todoUI
 
 import android.R.attr.priority
+import android.R.attr.title
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,21 +20,31 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.ThumbUp
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,6 +58,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.room.util.query
 import com.practice.daily_task.R
 import com.practice.daily_task.database.TodoViewModel
 import java.text.SimpleDateFormat
@@ -59,7 +72,8 @@ fun HomeScreen(navController: NavController, viewModel: TodoViewModel) {
 
     val todoList by viewModel.todoList.collectAsState()
     var selectedTab by rememberSaveable { mutableStateOf(0) }
-
+    val query by viewModel.searchQuery.collectAsState()
+    val tasks by viewModel.filteredTasks.collectAsState(initial = emptyList())
 
 
     MainScaffold(
@@ -102,13 +116,17 @@ fun HomeScreen(navController: NavController, viewModel: TodoViewModel) {
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .padding(16.dp),
+                .padding(8.dp),
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.Top,
         ) {
-            Row{
-
-            }
+            SortSearch(
+                query = query,
+                onQueryChange = {
+                    viewModel.updateSearchQuery(it)
+                },
+            )
+            Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = SimpleDateFormat(
                     "EEEE , h:mm a",
@@ -128,65 +146,66 @@ fun HomeScreen(navController: NavController, viewModel: TodoViewModel) {
                 color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.height(12.dp))
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    contentColor = MaterialTheme.colorScheme.onSurface
-                ),
-                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
-            ) {
-                Column(modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)) {
-                    Text("Your Daily Focus", fontSize = 24.sp, fontWeight = FontWeight.Bold)
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Text(
-                        stringResource(R.string.quotesPart1) +
-                                stringResource(R.string.quotesPart2),
-                        fontSize = 16.sp,
-                        color = Color.Gray,
-                        maxLines = Int.MAX_VALUE //allow multiple lines
-                    )
 
-                }
-            }
+
+//            Card(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(16.dp),
+//                shape = RoundedCornerShape(16.dp),
+//                colors = CardDefaults.cardColors(
+//                    containerColor = MaterialTheme.colorScheme.surface,
+//                    contentColor = MaterialTheme.colorScheme.onSurface
+//                ),
+//                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+//            ) {
+//                Column(modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(16.dp)) {
+//                    Text("Your Daily Focus", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+//                    Spacer(modifier = Modifier.height(12.dp))
+//                    Text(
+//                        stringResource(R.string.quotesPart1) +
+//                                stringResource(R.string.quotesPart2),
+//                        fontSize = 16.sp,
+//                        color = Color.Gray,
+//                        maxLines = Int.MAX_VALUE //allow multiple lines
+//                    )
+//
+//                }
+//            }
+
 
             //make safe call if list is empty then it only print text otherwise it call lazycolumn
-            val currentTodoList = todoList
-            currentTodoList?.let { list ->
-                if (list.isEmpty()) {
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center,
-                        text = "No Item Added Yet",
-                        fontSize = 16.sp
-                    )
-                } else {
-                    LazyColumn(
-                        content = {
-                            itemsIndexed(list) { index, item ->
-                                TodoItem(
-                                    item = item,
-                                    onClick = {navController.navigate("${routes.DetailScreen}/${item.id}")},
-                                    onDelete = { viewModel.deleteTodo(item.id) })
-                            }
-                        }
-                    )
+//            val currentTodoList = todoList
+//            currentTodoList?.let { list ->
+//                if (list.isEmpty()) {
+            if (tasks.isEmpty()) {
+                val emptyMessage = if(query.isBlank()){
+                    "No Task Added Yet"
+                }else{
+                    "No tasks match your search"
                 }
-            } ?: Text(
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center,
-                text = "No Task Added Yet",
-                fontSize = 16.sp
-            )
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    text = emptyMessage,
+                    fontSize = 16.sp
+                )
+            } else {
+                LazyColumn {
+                    itemsIndexed(tasks) { index, item ->
+                        TodoItem(
+                            item = item,
+                            onClick = { navController.navigate("${routes.DetailScreen}/${item.id}") },
+                            onDelete = { viewModel.deleteTodo(item.id) })
+                    }
+                }
+            }
+        }
 
         }
     }
-}
 
 
 
@@ -194,8 +213,6 @@ fun HomeScreen(navController: NavController, viewModel: TodoViewModel) {
 
     @Composable
     fun TodoItem(item: Todo, onClick : () -> Unit ,onDelete: () -> Unit) {
-
-
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -310,6 +327,93 @@ fun HomeScreen(navController: NavController, viewModel: TodoViewModel) {
 
         }
     }
+
+
+
+@Composable
+fun SortSearch(
+    query : String,
+    onQueryChange : (String) -> Unit
+) {
+    var isSheetOpen by rememberSaveable { mutableStateOf(false) }
+    Row(
+        modifier = Modifier.fillMaxWidth()
+            .padding(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        OutlinedTextField(
+            value = query,
+            onValueChange = {
+                onQueryChange(it)
+            },
+            placeholder = {
+                Text(
+                    text = "Search Task...",
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                )
+            },
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = "Search",
+                )
+            },
+            shape = RoundedCornerShape(12.dp),
+            modifier = Modifier.fillMaxWidth()
+                .height(56.dp)
+                .weight(1f),
+            singleLine = true,
+            maxLines = 1,
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                cursorColor = MaterialTheme.colorScheme.primary
+            )
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+
+        IconButton(
+            onClick = {isSheetOpen=true},
+            modifier = Modifier.size(48.dp)
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.sort_icon),
+                contentDescription = "Sort",
+                modifier = Modifier.size(36.dp)
+            )
+        }
+
+        if(isSheetOpen) {
+            BottomSheet(
+                onDismiss = { isSheetOpen = false }
+            )
+        }
+    }
+}
+
+
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun BottomSheet(onDismiss: () -> Unit){
+    val sheetState = rememberModalBottomSheetState()
+
+        ModalBottomSheet(
+            sheetState = sheetState,
+            onDismissRequest = {
+              onDismiss()
+            }
+        ) {
+            Text("Hello")
+
+        }
+    }
+
+
+
+
 
 
 
