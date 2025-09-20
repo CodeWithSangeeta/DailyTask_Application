@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practice.daily_task.todoUI.Priority
+import com.practice.daily_task.todoUI.SortOption
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
@@ -161,31 +162,33 @@ class TodoViewModel @Inject constructor(private val todoDao: TodoDao,
     private val _searchQuery = MutableStateFlow("")
     val searchQuery = _searchQuery.asStateFlow()
 
-    private val _sortOption = MutableStateFlow("Earliest First")
+    private val _sortOption = MutableStateFlow(SortOption.CREATED_FIRST)
     val sortOption = _sortOption.asStateFlow()
 
     //
     val filteredTasks : Flow<List<Todo>> = combine(allTasks, searchQuery,sortOption) {
-       allTasks, searchQuery ,sortOpt ->
-       var filtered = if (searchQuery.isBlank()) {
-            allTasks
+       tasks, query ,sortOpt ->
+       var filtered = if (query.isBlank()) {
+            tasks
         }
         else{
-            allTasks.filter{
-                allTasks ->
-                allTasks.title.contains(searchQuery, ignoreCase = true) ||
-               allTasks.description.contains(searchQuery, ignoreCase = true)
+            tasks.filter{
+                tasks ->
+                tasks.title.contains(query, ignoreCase = true) ||
+               tasks.description.contains(query, ignoreCase = true)
             }
     }
         filtered = when (sortOpt){
-            "Earliest First" -> filtered.sortedBy { it.dueDate }
-            "Latest First" -> filtered.sortedByDescending {it.dueDate}
-            "High → Low" -> filtered.sortedByDescending {it.priority}
-            "Low → High" -> filtered.sortedBy {it.priority}
-            "Complete  First" -> filtered.sortedBy{it.isMarked}
-             "Incomplete  First" -> filtered.sortedByDescending {it.isMarked}
-            "A → Z" -> filtered.sortedBy { it.title.lowercase() }
-            "Z → A" -> filtered.sortedByDescending { it.title.lowercase() }
+            SortOption.CREATED_FIRST -> filtered.sortedByDescending  { it.createdAt }
+            SortOption.CREATED_LAST -> filtered.sortedBy{it.createdAt}
+            SortOption.DUE_EARLIEST_FIRST -> filtered.sortedBy { it.dueDate }
+            SortOption.DUE_LATEST_FIRST -> filtered.sortedByDescending {it.dueDate}
+            SortOption.PRIORITY_HIGH_LOW-> filtered.sortedBy {it.priority}
+            SortOption.PRIORITY_LOW_HIGH-> filtered.sortedByDescending {it.priority}
+            SortOption.COMPLETE_FIRST -> filtered.sortedByDescending{it.isMarked}
+            SortOption.INCOMPLETE_FIRST -> filtered.sortedBy {it.isMarked}
+            SortOption.A_TO_Z -> filtered.sortedBy { it.title.lowercase() }
+            SortOption.Z_TO_A -> filtered.sortedByDescending { it.title.lowercase() }
             else -> filtered
         }
         filtered
@@ -195,7 +198,7 @@ class TodoViewModel @Inject constructor(private val todoDao: TodoDao,
         _searchQuery.value = newQuery
     }
 
-    fun updateSortOption(newSort:String){
+    fun updateSortOption(newSort: SortOption){
         _sortOption.value = newSort
     }
 

@@ -82,6 +82,7 @@ fun AddNewTask(navController: NavController, viewModel: TodoViewModel ) {
         topBar = {
             TopBar(
                 title = "Add New Task",
+                onBackClick = {navController.popBackStack()}
             )
         }
 

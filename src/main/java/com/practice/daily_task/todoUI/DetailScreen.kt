@@ -10,6 +10,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -69,6 +70,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.practice.daily_task.R
 import com.practice.daily_task.database.Todo
 import com.practice.daily_task.database.TodoViewModel
@@ -80,7 +82,7 @@ import java.util.Locale
 
 
 @Composable
-fun DetailScreen(todoId : Int, viewModel: TodoViewModel) {
+fun DetailScreen(todoId : Int, viewModel: TodoViewModel,navController: NavController) {
     val todo = viewModel.getTodoById(todoId).collectAsState(initial = null)
 
     var isEditing by remember { mutableStateOf(false) }
@@ -104,29 +106,43 @@ fun DetailScreen(todoId : Int, viewModel: TodoViewModel) {
 
     Scaffold(
         topBar = {
-            Column(
-                modifier = Modifier.fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.primaryContainer),
+            Column (
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(100.dp)
+                    .background(MaterialTheme.colorScheme.primaryContainer)
+                    .statusBarsPadding()
+                    .padding(horizontal = 8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                    IconButton(onClick = {}) {
-                        Icon(
-                            imageVector = Icons.Default.KeyboardArrowLeft,
-                            contentDescription = "Back",
-                            tint = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier
-                                .size(32.dp)
-                        )
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp)) {
+                        IconButton(
+                            onClick = {navController.popBackStack()},
+                            modifier = Modifier.align(Alignment.BottomStart)
+                            //  .padding(bottom = 2.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.KeyboardArrowLeft,
+                                contentDescription = "Back",
+                                tint = MaterialTheme.colorScheme.onSurface,
+                                modifier = Modifier
+                                    .size(32.dp)
+                            )
+
                     }
+
                     Text(
                         text = "Task Detail",
-                        textAlign = TextAlign.Center,
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(start = 12.dp, top = 4.dp),
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier.padding(start = 12.dp, top = 4.dp)
+                            .align(Alignment.Center)
                     )
+                }
 
                 Spacer(modifier = Modifier.height(20.dp))
                 HorizontalDivider(color = MaterialTheme.colorScheme.outline)
@@ -147,7 +163,7 @@ fun DetailScreen(todoId : Int, viewModel: TodoViewModel) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(12.dp)
-                    .size(500.dp)
+                    .size(600.dp)
                     .clip(RoundedCornerShape(8.dp))
                     .border(
                         width = 1.dp,

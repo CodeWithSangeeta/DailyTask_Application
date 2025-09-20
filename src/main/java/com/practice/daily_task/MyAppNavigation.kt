@@ -3,6 +3,7 @@ package com.practice.daily_task
 import android.window.SplashScreen
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -32,7 +33,7 @@ fun MyAppNavigation(viewModel: TodoViewModel) {
          arguments = listOf(navArgument("todoId"){type = NavType.IntType})
     ){   backStackEntry ->
             val todoId = backStackEntry.arguments?.getInt("todoId") ?: -1
-            DetailScreen(todoId = todoId,viewModel = viewModel)
+            DetailScreen(todoId = todoId,viewModel = viewModel,navController )
         }
 
 

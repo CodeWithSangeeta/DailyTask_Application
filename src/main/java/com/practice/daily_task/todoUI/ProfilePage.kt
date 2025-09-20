@@ -134,6 +134,7 @@ fun ProfilePage(navcontroller: NavController, viewModel: TodoViewModel = hiltVie
         topBar = {
             TopBar(
                 title = "Profile",
+                onBackClick = {navcontroller.popBackStack()}
             )
         },
     ) { innerPadding ->
