@@ -81,7 +81,8 @@ import org.intellij.lang.annotations.Pattern
 
 @Composable
 fun ProfilePage(navcontroller: NavController, viewModel: TodoViewModel = hiltViewModel()) {
-    val profile by viewModel.userData.collectAsState()
+
+    val profile by viewModel.userData.collectAsState(initial = null)
 
     var selectedTab by rememberSaveable { mutableStateOf(2) }
     var firstname by rememberSaveable { mutableStateOf("") }
@@ -95,13 +96,11 @@ fun ProfilePage(navcontroller: NavController, viewModel: TodoViewModel = hiltVie
 
 
     // Controls visibility of the personal information card
-    var isEditing by rememberSaveable { mutableStateOf(true) }
+    var isEditing by rememberSaveable { mutableStateOf(false) }
     val context = LocalContext.current
 
 
     //Profile pic setup
-    // collect user from DB
-    val user by viewModel.user.collectAsState(initial = null)
     // Profile picture launcher
     val pickLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
@@ -157,7 +156,8 @@ fun ProfilePage(navcontroller: NavController, viewModel: TodoViewModel = hiltVie
                 ) {
                     Box(modifier = Modifier.fillMaxWidth()) {
                         IconButton(
-                            onClick = { viewModel.clearUserProfile() },
+                            onClick = { viewModel.clearUserProfile()
+                                      isEditing=true},
                             modifier = Modifier.align(Alignment.TopEnd)
                         ) {
                             Icon(
@@ -186,11 +186,11 @@ fun ProfilePage(navcontroller: NavController, viewModel: TodoViewModel = hiltVie
                                         .size(100.dp)
                                         .clip(CircleShape)
                                         .border(2.dp, Color.Gray, CircleShape)
-                                        .background(Color.White, CircleShape)
+                                        .background(MaterialTheme.colorScheme.surface, CircleShape)
                                 ) {    //show image from uri
-                                    if (user?.profilePicPath != null) {
+                                    if (!profile?.profilePicPath.isNullOrEmpty()) {
                                         AsyncImage(
-                                            model = user!!.profilePicPath,
+                                            model = profile!!.profilePicPath,
                                             contentDescription = "Profile Picture",
                                             contentScale = ContentScale.Crop,
                                             modifier = Modifier.fillMaxSize()
@@ -198,7 +198,7 @@ fun ProfilePage(navcontroller: NavController, viewModel: TodoViewModel = hiltVie
                                         )
                                     } else {
                                         Icon(
-                                            painter = painterResource(id = R.drawable.ic_launcher_background),
+                                            painter = painterResource(id = R.drawable.default_profile_image),
                                             contentDescription = "Profile Picture",
                                             modifier = Modifier.fillMaxSize()
                                                 .clip(CircleShape)
@@ -237,8 +237,7 @@ fun ProfilePage(navcontroller: NavController, viewModel: TodoViewModel = hiltVie
 
 
                             Spacer(modifier = Modifier.height(12.dp))
-
-                            if (profile != null) {
+                            if(profile?.name!=null) {
                                 Text(
                                     text = profile!!.name,
                                     fontSize = 20.sp,
@@ -252,9 +251,9 @@ fun ProfilePage(navcontroller: NavController, viewModel: TodoViewModel = hiltVie
                                     fontSize = 14.sp,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
-                            }
 
-                            Spacer(modifier = Modifier.height(20.dp))
+                                Spacer(modifier = Modifier.height(20.dp))
+                            }
                         }
                     }
                 }
@@ -265,7 +264,7 @@ fun ProfilePage(navcontroller: NavController, viewModel: TodoViewModel = hiltVie
 
 
             item {
-                if (isEditing || profile==null ) {
+                if (isEditing || profile==null) {
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(16.dp),

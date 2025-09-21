@@ -35,6 +35,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -379,130 +380,72 @@ fun SortSearch(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BottomSheet(
-    selectedSort : SortOption,
-    onSortSelected : (SortOption) -> Unit,
+    selectedSort: SortOption,
+    onSortSelected: (SortOption) -> Unit,
     onDismiss: () -> Unit
-    ){
-        ModalBottomSheet(
-            onDismissRequest = {
-              onDismiss()
-            }
+) {
+    ModalBottomSheet(
+        onDismissRequest = { onDismiss() },
+        containerColor = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onSurface
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp)
         ) {
-           Column(modifier = Modifier
-               .fillMaxWidth()
-               .padding(16.dp)) {
-               Text("Sort By", style = MaterialTheme.typography.titleMedium.copy(
-                   color = MaterialTheme.colorScheme.primary
-               ))
+            // Header
+            Text(
+                text = "Sort By",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary
+            )
 
-               Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
-               //Title
-               Text("Created",
-                   style = MaterialTheme.typography.bodyMedium.copy(
-                       color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-                   ))
-               Row(verticalAlignment = Alignment.CenterVertically) {
-                   RadioButton(
-                       selected = selectedSort == SortOption.CREATED_FIRST,
-                       onClick = { onSortSelected(SortOption.CREATED_FIRST) }
-                   )
-                   Text(SortOption.CREATED_FIRST.label)
-               }
-               Row(verticalAlignment = Alignment.CenterVertically) {
-                   RadioButton(
-                       selected = selectedSort == SortOption.CREATED_LAST,
-                       onClick = { onSortSelected(SortOption.CREATED_LAST) }
-                   )
-                   Text(SortOption.CREATED_LAST.label)
-               }
+            @Composable
+            // 🔹 Section reusable composable
+            fun Section(title: String, options: List<SortOption>) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                    modifier = Modifier.padding(top = 10.dp, bottom = 4.dp)
+                )
+                options.forEach { option ->
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { onSortSelected(option) }
+                            //.padding(vertical = 4.dp)
+                    ) {
+                        RadioButton(
+                            selected = selectedSort == option,
+                            onClick = { onSortSelected(option) },
+                            colors = RadioButtonDefaults.colors(
+                                selectedColor = MaterialTheme.colorScheme.primary,
+                                unselectedColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                            )
+                        )
+                        Text(
+                            text = option.label,
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                }
+            }
 
-               // Due Date
-               Text("Due Date",
-                   style = MaterialTheme.typography.bodyMedium.copy(
-                       color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-                   ))
-               Row(verticalAlignment = Alignment.CenterVertically) {
-                   RadioButton(
-                       selected = selectedSort == SortOption.DUE_EARLIEST_FIRST,
-                       onClick = { onSortSelected(SortOption.DUE_EARLIEST_FIRST) }
-                   )
-                   Text(SortOption.DUE_EARLIEST_FIRST.label)
-               }
-               Row(verticalAlignment = Alignment.CenterVertically) {
-                   RadioButton(
-                       selected = selectedSort == SortOption.DUE_LATEST_FIRST,
-                       onClick = { onSortSelected(SortOption.DUE_LATEST_FIRST) }
-                   )
-                   Text(SortOption.DUE_LATEST_FIRST.label)
-               }
-
-               // Priority
-               Text("Priority",
-                   style = MaterialTheme.typography.bodyMedium.copy(
-                       color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-                   ))
-               Row(verticalAlignment = Alignment.CenterVertically) {
-                   RadioButton(
-                       selected = selectedSort == SortOption.PRIORITY_HIGH_LOW,
-                       onClick = { onSortSelected(SortOption.PRIORITY_HIGH_LOW) }
-                   )
-                   Text(SortOption.PRIORITY_HIGH_LOW.label)
-               }
-               Row(verticalAlignment = Alignment.CenterVertically) {
-                   RadioButton(
-                       selected = selectedSort == SortOption.PRIORITY_LOW_HIGH,
-                       onClick = { onSortSelected(SortOption.PRIORITY_LOW_HIGH) }
-                   )
-                   Text(SortOption.PRIORITY_LOW_HIGH.label)
-               }
-
-               // Due Date
-               Text("Status",
-                   style = MaterialTheme.typography.bodyMedium.copy(
-                       color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-                   ))
-               Row(verticalAlignment = Alignment.CenterVertically) {
-                   RadioButton(
-                       selected = selectedSort == SortOption.COMPLETE_FIRST,
-                       onClick = { onSortSelected(SortOption.COMPLETE_FIRST) }
-                   )
-                   Text(SortOption.COMPLETE_FIRST.label)
-               }
-               Row(verticalAlignment = Alignment.CenterVertically) {
-                   RadioButton(
-                       selected = selectedSort == SortOption.INCOMPLETE_FIRST,
-                       onClick = { onSortSelected(SortOption.INCOMPLETE_FIRST) }
-                   )
-                   Text(SortOption.INCOMPLETE_FIRST.label)
-               }
-
-               //Title
-               Text("Title",
-                   style = MaterialTheme.typography.bodyMedium.copy(
-                       color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-                   ))
-               Row(verticalAlignment = Alignment.CenterVertically) {
-                   RadioButton(
-                       selected = selectedSort == SortOption.A_TO_Z,
-                       onClick = { onSortSelected(SortOption.A_TO_Z) }
-                   )
-                   Text(SortOption.A_TO_Z.label)
-               }
-               Row(verticalAlignment = Alignment.CenterVertically) {
-                   RadioButton(
-                       selected = selectedSort == SortOption.Z_TO_A,
-                       onClick = { onSortSelected(SortOption.Z_TO_A) }
-                   )
-                   Text(SortOption.Z_TO_A.label)
-               }
-
-           }
+            // 🔹 Sections
+            Section("Created", listOf(SortOption.CREATED_FIRST, SortOption.CREATED_LAST))
+            Section("Due Date", listOf(SortOption.DUE_EARLIEST_FIRST, SortOption.DUE_LATEST_FIRST))
+            Section("Priority", listOf(SortOption.PRIORITY_HIGH_LOW, SortOption.PRIORITY_LOW_HIGH))
+            Section("Status", listOf(SortOption.COMPLETE_FIRST, SortOption.INCOMPLETE_FIRST))
+            Section("Title", listOf(SortOption.A_TO_Z, SortOption.Z_TO_A))
         }
     }
-
-
-
+}
 
 
 

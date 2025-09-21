@@ -105,29 +105,7 @@ class TodoViewModel @Inject constructor(private val todoDao: TodoDao,
     val userData: StateFlow<Profile?> = UserProfileDao.getUser()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
-    fun saveUserProfile(
-        name: String,
-        email: String,
-        phone: String
-    ) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val user = Profile(id=1,name = name, email = email, phone = phone)
-            UserProfileDao.saveUser(user)
-        }
-    }
 
-    fun clearUserProfile() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val empty = Profile(
-                id = 1,
-                name = "",
-                email = "",
-                phone = "",
-                profilePicPath = null
-            )
-            UserProfileDao.saveUser(empty)
-        }
-    }
 
 
     fun markTodo (id:Int,dueDate : Date?){
@@ -150,6 +128,7 @@ class TodoViewModel @Inject constructor(private val todoDao: TodoDao,
             }
             else{
                 Profile(
+                    id =1,
                     name = "User",
                     email = "user@gmail.com",
                     phone = "0000000000",
@@ -160,6 +139,41 @@ class TodoViewModel @Inject constructor(private val todoDao: TodoDao,
         }
     }
 
+    fun saveUserProfile(
+        name: String,
+        email: String,
+        phone: String
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val current = user.firstOrNull()
+            val updated = if(current != null){
+                current.copy(name = name, email = email, phone = phone)
+            }
+            else{
+                Profile(
+                    id = 1,
+                    name = name,
+                    email = email,
+                    phone = phone,
+                    profilePicPath = ""
+                )
+            }
+            UserProfileDao.saveUser(updated)
+        }
+    }
+
+    fun clearUserProfile() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val empty = Profile(
+                id = 1,
+                name = "User",
+                email = "user@gmail.com",
+                phone = "",
+                profilePicPath = null
+            )
+            UserProfileDao.saveUser(empty)
+        }
+    }
 
 
 

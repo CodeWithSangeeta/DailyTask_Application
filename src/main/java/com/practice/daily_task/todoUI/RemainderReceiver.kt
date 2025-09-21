@@ -74,7 +74,7 @@ class ReminderReceiver : BroadcastReceiver() {
 
             // Build notification
             val notification = NotificationCompat.Builder(context, "task_reminder_channel")
-                .setSmallIcon(R.drawable.reminder_logo)
+                .setSmallIcon(R.drawable.edit_icon)
                 .setContentTitle(title)
                 .setContentText("$dueText  $priorityIcon")
                 .setStyle(
