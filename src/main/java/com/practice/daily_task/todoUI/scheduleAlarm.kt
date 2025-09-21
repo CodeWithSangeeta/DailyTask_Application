@@ -6,17 +6,23 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.provider.Settings
+import com.practice.daily_task.database.Todo
 import java.util.Calendar
 
 
-fun scheduleAlarm(context: Context, calendar: Calendar) {
+fun scheduleAlarm(context: Context, calendar: Calendar,todo : Todo) {
 
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val intent = Intent(context, ReminderReceiver::class.java)
-
+        val intent = Intent(context, ReminderReceiver::class.java).apply {
+            putExtra("todoId", todo.id)
+            putExtra("title", todo.title)
+            putExtra("description", todo.description)
+            putExtra("dueDate", todo.dueDate?.time ?: -1L)
+            putExtra("priority", todo.priority.name)
+        }
         val pendingIntent = PendingIntent.getBroadcast(
             context,
-            0,
+            todo.id,
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )

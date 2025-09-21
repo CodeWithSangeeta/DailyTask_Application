@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.Instant
 import java.util.Date
 
@@ -52,6 +53,12 @@ class TodoViewModel @Inject constructor(private val todoDao: TodoDao,
                     reminderTime = reminderTime
                 )
             )
+        }
+    }
+
+    fun insertTodo(todo:Todo){
+        viewModelScope.launch(Dispatchers.IO){
+            todoDao.addTodo(todo)
         }
     }
 
@@ -171,13 +178,14 @@ class TodoViewModel @Inject constructor(private val todoDao: TodoDao,
        var filtered = if (query.isBlank()) {
             tasks
         }
-        else{
-            tasks.filter{
-                tasks ->
-                tasks.title.contains(query, ignoreCase = true) ||
-               tasks.description.contains(query, ignoreCase = true)
-            }
-    }
+        else {
+           tasks.filter { tasks ->
+               tasks.title.contains(query, ignoreCase = true) ||
+                       tasks.description.contains(query, ignoreCase = true)
+           }
+       }
+
+
         filtered = when (sortOpt){
             SortOption.CREATED_FIRST -> filtered.sortedByDescending  { it.createdAt }
             SortOption.CREATED_LAST -> filtered.sortedBy{it.createdAt}
@@ -203,6 +211,14 @@ class TodoViewModel @Inject constructor(private val todoDao: TodoDao,
     }
 
 
+    fun insertTodoAndReturnId(todo : Todo, onResult : (Int) -> Unit){
+        viewModelScope.launch(Dispatchers.IO){
+            val rowId = todoDao.insertTodo(todo)
+            withContext(Dispatchers.Main){
+                onResult(rowId.toInt())
+            }
+        }
+    }
 }
 
 

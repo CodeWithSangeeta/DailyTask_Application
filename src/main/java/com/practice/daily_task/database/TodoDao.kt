@@ -33,4 +33,7 @@ interface TodoDao {
     @Query("UPDATE Todo SET isMarked = :status WHERE id = :id")
     suspend fun updateMarkStatus(id:Int, status : Boolean)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertTodo(todo: Todo) : Long
+
 }

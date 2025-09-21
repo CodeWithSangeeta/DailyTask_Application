@@ -45,6 +45,7 @@ import com.practice.daily_task.routes
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.LocalContext
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -224,7 +225,6 @@ fun AddNewTask(navController: NavController, viewModel: TodoViewModel ) {
             AssistChip(
                 onClick = {
                     showDateTimePicker(context) { calendar ->
-                       scheduleAlarm(context, calendar)
                         selectedDateTime = calendar.timeInMillis
                         formattedDateTime = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(calendar.time)
                      isReminderSet = true
@@ -258,17 +258,41 @@ fun AddNewTask(navController: NavController, viewModel: TodoViewModel ) {
                 if(title.isBlank() || description.isBlank()){
                     Toast.makeText(context,"Please Add Title and Description!", Toast.LENGTH_SHORT).show()
                 }else {
+
+                    val tempTodo = Todo(
+                        title = title,
+                        description = description,
+                        createdAt = Date(),
+                        dueDate = dueDate,
+                        priority = selectedPriority,
+                        isReminderSet = isReminderSet,
+                        reminderTime = selectedDateTime
+                    )
+//                    viewModel.insertTodo(newTodo)
+//
+//                    if (newTodo.isReminderSet && newTodo.reminderTime != null) {
+//                        val calendar = Calendar.getInstance().apply { timeInMillis = selectedDateTime!! }
+//                        scheduleAlarm(context, calendar, newTodo)
+
+                    viewModel.insertTodoAndReturnId(tempTodo){ realId ->
+                        val todoWithId = tempTodo.copy(id=realId)
+
+                        if(todoWithId.isReminderSet && todoWithId.reminderTime != null){
+                            val calendar = Calendar.getInstance().apply { timeInMillis = todoWithId.reminderTime!! }
+                            scheduleAlarm(context,calendar,todoWithId)
+                        }
+
+                    }
                     Toast.makeText(context,"Task Saved Successfully!", Toast.LENGTH_SHORT).show()
 
-                    viewModel.addTodo(title = title,
-                        description = description,
-                       dueDate = dueDate,
-                        selectedPriority = selectedPriority,
-                        isReminderSet = isReminderSet,
-                        reminderTime = selectedDateTime)
+                    //Fields reset
                     title = ""
                     description = ""
                     dueDate = null
+                    isReminderSet = false
+                    selectedDateTime = null
+                    formattedDateTime = "Add Reminder"
+
 
                     navController.navigate(routes.HomeScreen)
                 }

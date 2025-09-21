@@ -31,6 +31,11 @@
         <receiver android:name=".todoUI.ReminderReceiver"
             android:exported="true"/>
 
+
+
+        <receiver android:name=".todoUI.ReminderActionReceiver"/>
+
     </application>
 
 </manifest>
+
