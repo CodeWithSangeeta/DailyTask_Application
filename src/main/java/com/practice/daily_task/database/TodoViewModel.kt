@@ -166,7 +166,7 @@ class TodoViewModel @Inject constructor(private val todoDao: TodoDao,
         viewModelScope.launch(Dispatchers.IO) {
             val empty = Profile(
                 id = 1,
-                name = "User",
+                name = "User Name",
                 email = "user@gmail.com",
                 phone = "",
                 profilePicPath = null

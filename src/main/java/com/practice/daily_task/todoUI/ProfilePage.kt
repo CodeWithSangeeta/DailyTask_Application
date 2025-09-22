@@ -186,7 +186,7 @@ fun ProfilePage(navcontroller: NavController, viewModel: TodoViewModel = hiltVie
                                         .size(100.dp)
                                         .clip(CircleShape)
                                         .border(2.dp, Color.Gray, CircleShape)
-                                        .background(MaterialTheme.colorScheme.surface, CircleShape)
+                                        .background(Color.LightGray, CircleShape)
                                 ) {    //show image from uri
                                     if (!profile?.profilePicPath.isNullOrEmpty()) {
                                         AsyncImage(
