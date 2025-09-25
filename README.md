@@ -1,60 +1,101 @@
-Daily Task - The Secure & Private Task Manager
+## Daily Task - The Secure & Private Task Manager
 
-Daily Task is a modern, intuitive, and secure task management application designed for individuals who want to stay organized and productive without compromising their privacy. Unlike cloud-based solutions, all user data is stored locally on the device, ensuring complete privacy and security. The app provides a powerful set of tools to manage daily tasks, set priorities, and receive actionable reminders — all from a simple, clean interface.
+**Daily Task** is a modern, intuitive, and secure task management application designed for individuals who want to stay organized and productive without compromising their privacy.  
 
-This repository contains the source code for the Daily Task application. We’ve built it with a strong focus on a seamless user experience, a robust feature set, and a privacy-first architecture.
+✨ Unlike cloud-based solutions, all user data is stored **locally on the device**, ensuring complete privacy and security.  
+✨ The app provides a **powerful set of tools** to manage tasks, set priorities, and receive actionable reminders — all from a **simple, clean interface**.  
 
-Core Features
+This repository contains the source code for the **Daily Task** application, built with:  
+- ✅ Focus on **seamless user experience**  
+- ✅ **Robust feature set**  
+- ✅ **Privacy-first architecture**  
 
-📝 Task Management
+---
 
-Full CRUD operations (Create, Read, Update, Delete) for tasks.
+## 🚀 Core Features
 
-Mark tasks as complete, giving users a sense of accomplishment and a clear view of progress.
-Conditional Completion: A task can only be marked as complete if done before its due date.
+### 📝 Task Management
+- Full **CRUD operations** (Create, Read, Update, Delete) for tasks.  
+- Mark tasks as **complete** for a sense of accomplishment.  
+- **Conditional Completion** → A task can only be marked complete if done **before its due date**.  
 
-📌 Organization & Prioritization
+---
 
-Priority Levels: Assign tasks as High, Medium, or Low priority.
+### 📌 Organization & Prioritization
+- **Priority Levels** → Assign tasks as **High, Medium, or Low**.  
+- **Due Dates** → Set deadlines to complete tasks on time.  
 
-Due Dates: Ensure tasks are completed on time by setting deadlines.
+---
 
-🔔 Notifications & Reminders
+### 🔔 Notifications & Reminders
+- **Actionable Notifications** → Timely alerts with actions (Snooze / Mark Complete).  
+- **Reminders** → Stay on top of critical deadlines.  
 
-Actionable Notifications: Receive timely alerts for upcoming tasks and take actions directly from the notification (e.g., Snooze or Mark Complete).
+---
 
-Reminders: Create and manage reminders to stay on top of critical deadlines.
+### 📂 Data Organization & Search
+- **Sorting Options**  
+  - By Name (A–Z)  
+  - By Priority  
+  - By Due Date  
+  - By Completion Status  
+- **Search Functionality** → Quickly find tasks by name.  
 
-📂 Data Organization & Search
+---
 
-Sorting Options: Sort tasks by
+### 👤 Personalization & User Profile
+- Create and manage a **user profile**.  
+- Add a **profile picture** for personalization.  
 
-Name (alphabetical order)
+---
 
-Priority
+### 🔒 Privacy & Security
+- **On-Device Data Storage** → All data stored locally on the device.  
+- **No Cloud Storage** → Eliminates risks of remote breaches, ensuring privacy.  
 
-Due Date
-
-Completion Status
-
-Search Functionality: Quickly find tasks by name using the built-in search bar.
-
-👤 Personalization & User Profile
-
-Create a user profile within the app.
-
-Add a profile picture for a personalized experience.
-
-🔒 Privacy & Security
-
-On-Device Data Storage: All user data is stored locally on the device.
-
-No Cloud Storage: Eliminates risks of remote data breaches and ensures privacy.
+---
 
 
 
-![addTask_lightMode](https://github.com/user-attachments/assets/9d9f1b4d-e0f1-4317-88a2-a2684aa45cd6)
 
-![Profile_Page](https://github.com/user-attachments/assets/db8f05c6-a9ac-40fe-9c18-4fb2cddab8e8)![Permission_Ask](https://github.com/user-attachments/assets/50dcbed2-a204-4d10-97ed-c85b6add0cea)
+  ## Light Mode Screenshots
+<div align="center">
+  <img src="daily_task_screenshots/askPermission_lightMode.jpg" width="200" style="margin:10px;" />&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="daily_task_screenshots/homePage_lightMode.jpg" width="200" style="margin:10px;" />&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="daily_task_screenshots/sort_list_lightMode.jpg" width="200" style="margin:10px;" />&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="daily_task_screenshots/addTask_lightMode.jpg" width="200" style="margin:10px;" />&nbsp;&nbsp;&nbsp;&nbsp;
+</div>
 
-![sort_list_lightMode](https://github.com/user-attachments/assets/5e0d02c9-9cf4-4a76-952a-3b9e5b7dc09f)
+  <br/> 
+  
+  <div align="center">
+  <img src="daily_task_screenshots/detailPage_lightMode.jpg" width="200" style="margin:10px;" />&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="daily_task_screenshots/editProfile_lightMode.jpg" width="200" style="margin:10px;" />&nbsp;&nbsp;&nbsp;&nbsp;
+</div>
+
+<br/>
+
+## Dark Mode Screenshots
+<div align="center">
+  <img src="daily_task_screenshots/notification.jpg" width="200" style="margin:10px;" />&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="daily_task_screenshots/askPermission_darkMode.jpg" width="200" style="margin:10px;" />&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="daily_task_screenshots/homepage_darkMode.jpg" width="200" style="margin:10px;" />&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="daily_task_screenshots/sortList_darkMode.jpg" width="200" style="margin:10px;" />&nbsp;&nbsp;&nbsp;&nbsp;
+</div>
+
+<br/>
+
+<div align="center">
+  <img src="daily_task_screenshots/addTask_darkMode.jpg" width="200" style="margin:10px;" />&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="daily_task_screenshots/detailTask_darkMode.jpg" width="200" style="margin:10px;" />&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="daily_task_screenshots/editProfile_darkMode.jpg" width="200" style="margin:10px;" />&nbsp;&nbsp;&nbsp;&nbsp;
+</div>
+
+<br/>
+
+## Long Screenshots
+<div align="center">
+  <img src="daily_task_screenshots/profile_page_lightMode.jpg" width="200" style="margin:10px;" />&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="daily_task_screenshots/profilePage_darkMode.jpg" width="200" style="margin:10px;" />&nbsp;&nbsp;&nbsp;&nbsp;
+</div>
+
