@@ -53,4 +53,8 @@ No Cloud Storage: Eliminates risks of remote data breaches and ensures privacy.
 
 
 
+![addTask_lightMode](https://github.com/user-attachments/assets/9d9f1b4d-e0f1-4317-88a2-a2684aa45cd6)
 
+![Profile_Page](https://github.com/user-attachments/assets/db8f05c6-a9ac-40fe-9c18-4fb2cddab8e8)![Permission_Ask](https://github.com/user-attachments/assets/50dcbed2-a204-4d10-97ed-c85b6add0cea)
+
+![sort_list_lightMode](https://github.com/user-attachments/assets/5e0d02c9-9cf4-4a76-952a-3b9e5b7dc09f)
