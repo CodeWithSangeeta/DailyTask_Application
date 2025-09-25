@@ -63,12 +63,12 @@ This repository contains the source code for the **Daily Task** application, bui
   <img src="daily_task_screenshots/askPermission_lightMode.jpg" width="200" style="margin:10px;" />&nbsp;&nbsp;&nbsp;&nbsp;
   <img src="daily_task_screenshots/homePage_lightMode.jpg" width="200" style="margin:10px;" />&nbsp;&nbsp;&nbsp;&nbsp;
   <img src="daily_task_screenshots/sort_list_lightMode.jpg" width="200" style="margin:10px;" />&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="daily_task_screenshots/addTask_lightMode.jpg" width="200" style="margin:10px;" />&nbsp;&nbsp;&nbsp;&nbsp;
 </div>
 
   <br/> 
   
   <div align="center">
+  <img src="daily_task_screenshots/addTask_lightMode.jpg" width="200" style="margin:10px;" />&nbsp;&nbsp;&nbsp;&nbsp;
   <img src="daily_task_screenshots/detailPage_lightMode.jpg" width="200" style="margin:10px;" />&nbsp;&nbsp;&nbsp;&nbsp;
   <img src="daily_task_screenshots/editProfile_lightMode.jpg" width="200" style="margin:10px;" />&nbsp;&nbsp;&nbsp;&nbsp;
 </div>
@@ -80,12 +80,12 @@ This repository contains the source code for the **Daily Task** application, bui
   <img src="daily_task_screenshots/notification.jpg" width="200" style="margin:10px;" />&nbsp;&nbsp;&nbsp;&nbsp;
   <img src="daily_task_screenshots/askPermission_darkMode.jpg" width="200" style="margin:10px;" />&nbsp;&nbsp;&nbsp;&nbsp;
   <img src="daily_task_screenshots/homepage_darkMode.jpg" width="200" style="margin:10px;" />&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="daily_task_screenshots/sortList_darkMode.jpg" width="200" style="margin:10px;" />&nbsp;&nbsp;&nbsp;&nbsp;
 </div>
 
 <br/>
 
 <div align="center">
+  <img src="daily_task_screenshots/sortList_darkMode.jpg" width="200" style="margin:10px;" />&nbsp;&nbsp;&nbsp;&nbsp;
   <img src="daily_task_screenshots/addTask_darkMode.jpg" width="200" style="margin:10px;" />&nbsp;&nbsp;&nbsp;&nbsp;
   <img src="daily_task_screenshots/detailTask_darkMode.jpg" width="200" style="margin:10px;" />&nbsp;&nbsp;&nbsp;&nbsp;
   <img src="daily_task_screenshots/editProfile_darkMode.jpg" width="200" style="margin:10px;" />&nbsp;&nbsp;&nbsp;&nbsp;
