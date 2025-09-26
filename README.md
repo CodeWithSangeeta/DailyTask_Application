@@ -56,6 +56,8 @@ This repository contains the source code for the **Daily Task** application, bui
 ---
 
 
+## 🎥 Demo Video
+Watch the demo on YouTube 👉 [Click Here](https://www.youtube.com/watch?v=Sgd57fWsTBw)
 
 
   ## Light Mode Screenshots
@@ -98,4 +100,6 @@ This repository contains the source code for the **Daily Task** application, bui
   <img src="daily_task_screenshots/profile_page_lightMode.jpg" width="200" style="margin:10px;" />&nbsp;&nbsp;&nbsp;&nbsp;
   <img src="daily_task_screenshots/profilePage_darkMode.jpg" width="200" style="margin:10px;" />&nbsp;&nbsp;&nbsp;&nbsp;
 </div>
+
+
 
